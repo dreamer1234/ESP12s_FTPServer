@@ -24,7 +24,10 @@ Image with the setup:
 - DNS name added so a connection can be stablished without knowing the IP Address when the client is connecting using the same network. Name to connect by default: ESP8266
 
 # Installation
-- Just clone the repository and use Platformio to build and upload the code to the ESP12s board. To upload the code to the board, just remember you need to first press the BOOT button, then connect the USB cable to the board and the computer and then release the BOOT button. 
+- Just clone the repository and use Platformio to build and upload the code to the ESP12s board. To upload the code to the board, just remember you need to first press the BOOT button, then connect the USB cable to the board and the computer and then release the BOOT button.
+
+# Client configuration
+- Just read the guide inside the "doc" folder of the repository
 
 # Notes
 - The development is in very early stage, and I'm not sure how is going to evolve or when or if it's going to be mantained.
