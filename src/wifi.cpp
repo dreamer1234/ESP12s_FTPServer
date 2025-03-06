@@ -18,8 +18,8 @@
 
 void ConnectToWifi(){
    // WiFi credentials
-   const char* WIFI_SSID = "E380";    		// Replace with your WiFi SSID
-   const char* WIFI_PASSWORD = "deib2wke9nn54n";    // Replace with your WiFi password
+   const char* WIFI_SSID = "YOUR SSID";    		// Replace with your WiFi SSID
+   const char* WIFI_PASSWORD = "YOUR PASSWORD";    // Replace with your WiFi password
    // InitializeSDCard();
    // Get WiFi credentials from credentials.txt file . 
    /* File file = SD.open("/credentials.txt", FILE_READ);
