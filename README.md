@@ -33,6 +33,7 @@ Image with the setup:
 - The development is in very early stage, and I'm not sure how is going to evolve or when or if it's going to be mantained.
 - The code is distributed AS-IS. I'm not responsible for any issue.
 - User and password by default: user / password . Change them in the code before compiling if you want different ones.
+- Keep in mind that this is a microcontroller. Despite the FTP transfers seem to work fine, do not expect the transfer to be as fast as with your computer. I have tried several approaches and this one seems the fastest I have been able to make it work. 
 
 # TO-DO
 - Clean up code.
