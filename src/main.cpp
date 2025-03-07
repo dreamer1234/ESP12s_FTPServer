@@ -32,8 +32,6 @@
  // FTP server instance
  FtpServer ftpServer;
  
-
-
  void setup() {
  
    // Connect to WiFi
