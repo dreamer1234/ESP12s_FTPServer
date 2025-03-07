@@ -38,6 +38,5 @@ Image with the setup:
 
 # TO-DO
 - Clean up code.
-- Pending to add the reading of Wireless credentials from TXT file on the SD Card.
 - Try to make it work with the LilyGo FabGL TTGO VGA32 as main board. The LilyGo FabGL TTGO VGA32, does not even power on when the ESP12s board is connected to the SD card slot. I don't know it it can be solved or how. Olimex board seems to work pretty nice, though.
 - Additional features using the WiFi connection (perhaps).
