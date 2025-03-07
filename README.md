@@ -1,5 +1,5 @@
 # ESP12s_FTPServer
-FTP Server over with SD card support using FAT filesystem. 
+FTP Server with SD card support using FAT filesystem. 
 - FTP Server code mainly based in the code by Renzo Mischianti: https://github.com/xreef/SimpleFTPServer
 - Bus control code from: https://github.com/Jason2866/WiFi-SDCard
 - Lots of other sources like forums and personal code.
