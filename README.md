@@ -19,8 +19,8 @@ Image with the setup:
 
 
 # Features
-- The main ESP32 board can use the SD slot all the time but when an FTP transfer is in course by the SLAVE ESP12s board (when it takes the ownership of the SD card)
-- After the FTP transfer is finished, the SLAVE ESP12s board releases the bus, so the main ESP32 board can use it.
+- The main ESP32 board can use the SD slot all the time but when an FTP transfer is in course by the slave ESP12s board (when it takes the ownership of the SD card)
+- After the FTP transfer is finished, the slave ESP12s board releases the bus, so the main ESP32 board can use the SD card.
 - DNS name added so a connection can be stablished without knowing the IP Address when the client is connecting using the same network. Name to connect by default: ESP8266
 
 # Installation
