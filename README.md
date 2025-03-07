@@ -25,10 +25,11 @@ Image with the setup:
 - Simple but WiFi credentials from txt file inside the SD Card. Just change them if you change the network the board is connected without flashing the board. 
 
 # Installation
-- Steps explained in the document about compiling and installing inside the doc folder of the repository.
+- Installation steps explained in the HowToCompileAndInstall.pdf document inside the doc folder of the repository.
+- WiFi configuration steps explained in the HowToConnectToWiFi.pdf file inside the doc folder of the repository.
 
 # Client configuration
-- Steps explained in the guide inside the "doc" folder of the repository.
+- Steps explained in the HowToConnect_ClientToFTPServer.pdf guide inside the "doc" folder of the repository.
 
 # Notes
 - The development is in very early stage, and I'm not sure how is going to evolve or when or if it's going to be mantained.
