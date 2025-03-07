@@ -31,17 +31,10 @@
  #else
  #include "WProgram.h"
  #endif
- 
 
- //
- //#if(NETWORK_ESP8266_SD == DEFAULT_FTP_SERVER_NETWORK_TYPE_ESP8266)
- //	#define ESP8266_GT_2_4_2_SD_STORAGE_SELECTED
- //	#define DEFAULT_FTP_SERVER_NETWORK_TYPE_ESP8266 NETWORK_ESP8266
- //#endif
- 
  #if !defined(FTP_SERVER_NETWORK_TYPE)
  // select Network type based
-     #if defined(ESP8266) || defined(ESP31B)
+     #if defined(ESP8266)
          #if(NETWORK_ESP8266_242 == DEFAULT_FTP_SERVER_NETWORK_TYPE_ESP8266)
              #define ARDUINO_ESP8266_RELEASE_2_4_2
  
@@ -64,14 +57,7 @@
  #endif
  
  
- #if defined(ESP8266) || defined(ESP31B)
-     #ifndef STORAGE_SD_FORCE_DISABLE
-         #define STORAGE_SD_ENABLED
-     #endif
-     #ifndef STORAGE_SPIFFS_FORCE_DISABLE
-         #define STORAGE_SPIFFS_ENABLED
-     #endif
- #elif defined(ESP32)
+ #if defined(ESP8266)
      #ifndef STORAGE_SD_FORCE_DISABLE
          #define STORAGE_SD_ENABLED
      #endif
@@ -98,29 +84,14 @@
          #define FTP_CLIENT_NETWORK_CLASS WiFiClient
          //#define FTP_CLIENT_NETWORK_SSL_CLASS WiFiClientSecure
          #define FTP_SERVER_NETWORK_SERVER_CLASS WiFiServer
- 
-     #elif defined(ESP32)
-         #include <WiFi.h>
-         //#include <WiFiClientSecure.h>
- 
-         #define FTP_CLIENT_NETWORK_CLASS WiFiClient
-         //#define FTP_CLIENT_NETWORK_SSL_CLASS WiFiClientSecure
-         #define FTP_SERVER_NETWORK_SERVER_CLASS WiFiServer
- 
-         #define NET_CLASS WiFi
-     #elif defined(ESP31B)
-         #include <ESP31BWiFi.h>
- 
-         #define FTP_CLIENT_NETWORK_CLASS WiFiClient
-         //#define FTP_CLIENT_NETWORK_SSL_CLASS WiFiClientSecure
-         #define FTP_SERVER_NETWORK_SERVER_CLASS WiFiServer
+
      #else
          #error "network type ESP8266 ASYNC only possible on the ESP mcu!"
      #endif
  
  #elif(FTP_SERVER_NETWORK_TYPE == NETWORK_ESP8266 || FTP_SERVER_NETWORK_TYPE == NETWORK_ESP8266_242)
  
-         #if !defined(ESP8266) && !defined(ESP31B)
+         #if !defined(ESP8266)
              #error "network type ESP8266 only possible on the ESP mcu!"
          #endif
  
@@ -140,7 +111,7 @@
      #error "no network type selected!"
  #endif
  
- #if defined(ESP8266) || defined(ESP32) || defined(ARDUINO_ARCH_RP2040)
+ #if defined(ESP8266)
      #define CommandIs( a ) (command != NULL && ! strcmp_P( command, PSTR( a )))
      #define ParameterIs( a ) ( parameter != NULL && ! strcmp_P( parameter, PSTR( a )))
  #else
@@ -148,101 +119,7 @@
      #define ParameterIs( a ) ( ! strcmp_PF( parameter, PSTR( a )))
  #endif
  
- #if(STORAGE_TYPE == STORAGE_SPIFFS)
-         #if defined(ESP32)
-
-             #include <SPIFFS.h>
- 
-             #define FTP_FILE File
-                   #define FTP_DIR File
-         #else
-             #ifdef ARDUINO_ESP8266_RELEASE_2_4_2
-                 #define FS_NO_GLOBALS
-                 #include "FS.h"
-               #define FTP_FILE fs::File
-               #define FTP_DIR fs::Dir
-             #else
-                 #include "FS.h"
-               #define FTP_FILE File
-               #define FTP_DIR Dir
-             #endif
- 
-         #endif
- 
- #if ESP8266
-     #define FTP_FILE_READ "r"
-     #define FTP_FILE_READ_ONLY "r"
-     #define FTP_FILE_READ_WRITE "w+"
-     #define FTP_FILE_WRITE_APPEND "a+"
-     #define FTP_FILE_WRITE_CREATE "w+"
- #else
-     #define FTP_FILE_READ "r"
-     #define FTP_FILE_READ_ONLY "r"
-     #define FTP_FILE_READ_WRITE "w"
-     #define FTP_FILE_WRITE_APPEND "a"
-     #define FTP_FILE_WRITE_CREATE "w"
- #endif
- 
-     #define STORAGE_MANAGER SPIFFS
- 
-     #define FILENAME_LENGTH 32
- #elif(STORAGE_TYPE == STORAGE_FFAT)
-         #include "FS.h"
-         #include "FFat.h"
- 
-         #define STORAGE_MANAGER FFat
- 
-         #define FTP_FILE File
-         #define FTP_DIR File
- 
-         #define FTP_FILE_READ "r"
-         #define FTP_FILE_READ_ONLY "r"
-         #define FTP_FILE_READ_WRITE "w"
-         #define FTP_FILE_WRITE_APPEND "a"
-         #define FTP_FILE_WRITE_CREATE "w"
- 
-     #define FILENAME_LENGTH 255
- #elif(STORAGE_TYPE == STORAGE_LITTLEFS)
-     #if ESP8266 || ARDUINO_ARCH_RP2040
-         #include "LittleFS.h"
-         #define STORAGE_MANAGER LittleFS
-         #define FTP_FILE File
-         #define FTP_DIR Dir
- 
-         #define FTP_FILE_READ "r"
-         #define FTP_FILE_READ_ONLY "r"
-         #define FTP_FILE_READ_WRITE "w+"
-         #define FTP_FILE_WRITE_APPEND "a+"
-         #define FTP_FILE_WRITE_CREATE "w+"
-     #else
- #ifdef ESP32
-     #if ESP_ARDUINO_VERSION_MAJOR >= 2
-             #include "FS.h"
-             #include "LittleFS.h"
-             #define STORAGE_MANAGER LittleFS
-     #else
-             #include "LITTLEFS.h"
-             #define STORAGE_MANAGER LITTLEFS
-     #endif
- #else
-     #include "LittleFS.h"
-     #define STORAGE_MANAGER LittleFS
- #endif
-         #define FTP_FILE File
-         #define FTP_DIR File
- 
-         #define FTP_FILE_READ "r"
-         #define FTP_FILE_READ_ONLY "r"
-         #define FTP_FILE_READ_WRITE "w"
-         #define FTP_FILE_WRITE_APPEND "a"
-         #define FTP_FILE_WRITE_CREATE "w"
-     #endif
-     #ifdef ESP8266
-         #define FILENAME_LENGTH 32
-     #else
-         #define FILENAME_LENGTH 255
-     #endif
- #elif(STORAGE_TYPE == STORAGE_SD)
+ #if(STORAGE_TYPE == STORAGE_SD)
      #include <SPI.h>
      #include <SD.h>
  
@@ -283,95 +160,7 @@
      #define FTP_FILE_WRITE_CREATE FILE_WRITE
  
      #define FILENAME_LENGTH 255
- #elif(STORAGE_TYPE == STORAGE_SEEED_SD)
-     #include <Seeed_FS.h>
-     #define STORAGE_MANAGER SD
  
-     #include "SD/Seeed_SD.h"
- 
- 
- 
- //	#define STORAGE_MANAGER SPIFLASH
- //	#include "SFUD/Seeed_SFUD.h"
- 
-     #define FTP_FILE File
-     #define FTP_DIR File
- 
-     #define FTP_FILE_READ FILE_READ
-     #define FTP_FILE_READ_ONLY FILE_READ
-     #define FTP_FILE_READ_WRITE FILE_WRITE
-     #define FTP_FILE_WRITE_APPEND FILE_APPEND
-     #define FTP_FILE_WRITE_CREATE FILE_WRITE
- 
-     #define FILENAME_LENGTH 255
- 
- #elif (STORAGE_TYPE == STORAGE_SDFAT1)
-     #include <SdFat.h>
-     #include <sdios.h>
- 
-     #define STORAGE_MANAGER sd
-     #define FTP_FILE SdFile
-     #define FTP_DIR SdFile
-     extern SdFat STORAGE_MANAGER;
- 
-     #define FTP_FILE_READ O_READ
-     #define FTP_FILE_READ_ONLY O_RDONLY
-     #define FTP_FILE_READ_WRITE O_RDWR
-     #define FTP_FILE_WRITE_APPEND O_WRITE | O_APPEND
-     #define FTP_FILE_WRITE_CREATE O_WRITE | O_CREAT
-     #define FILENAME_LENGTH 255
- 
- #elif (STORAGE_TYPE == STORAGE_SDFAT2)
-     #include <SdFat.h>
-     #include <sdios.h>
- 
-     #define STORAGE_MANAGER sd
-     #define FTP_FILE FsFile
-     #define FTP_DIR FsFile
-     extern SdFat STORAGE_MANAGER;
- 
-     #define FTP_FILE_READ O_READ
-     #define FTP_FILE_READ_ONLY O_RDONLY
-     #define FTP_FILE_READ_WRITE O_RDWR
-     #define FTP_FILE_WRITE_APPEND O_WRITE | O_APPEND
-     #define FTP_FILE_WRITE_CREATE O_WRITE | O_CREAT
-     #define FILENAME_LENGTH 255
- #elif (STORAGE_TYPE == STORAGE_SPIFM)
-     #include <SdFat.h>
-     #include <Adafruit_SPIFlash.h>
-     #include <sdios.h>
- 
-     #define STORAGE_MANAGER fatfs
-     #define FTP_FILE File
-     #define FTP_DIR File
-     extern FatFileSystem STORAGE_MANAGER;
-     extern Adafruit_SPIFlash flash;
-     #define FTP_FILE_READ FILE_READ
-     #define FTP_FILE_READ_ONLY FILE_READ
-     #define FTP_FILE_READ_WRITE FILE_WRITE
-     #define FTP_FILE_WRITE_APPEND FILE_WRITE
-     #define FTP_FILE_WRITE_CREATE FILE_WRITE
-     #define FILENAME_LENGTH 255
- #elif (STORAGE_TYPE == STORAGE_FATFS)
-     #include <FatFs.h>
-     #include <sdios.h>
- 
-     #define STORAGE_MANAGER sdff
-     #define FTP_FILE FileFs
-     #define FTP_DIR DirFs
-     extern FatFsClass STORAGE_MANAGER;
-     #define O_READ     FA_READ
-     #define O_WRITE    FA_WRITE
-     #define O_RDWR     FA_READ | FA_WRITE
-     #define O_CREAT    FA_CREATE_ALWAYS
-     #define O_APPEND   FA_OPEN_APPEND
- 
-     #define FTP_FILE_READ O_READ
-     #define FTP_FILE_READ_ONLY O_RDONLY
-     #define FTP_FILE_READ_WRITE O_RDWR
-     #define FTP_FILE_WRITE_APPEND O_WRITE | O_APPEND
-     #define FTP_FILE_WRITE_CREATE O_WRITE | O_CREAT
-     #define FILENAME_LENGTH 255
  #endif
  
  
@@ -495,51 +284,24 @@
    int32_t readChar();
  
    const String getFileName(FTP_FILE *file){
-     #if STORAGE_TYPE <= STORAGE_SDFAT2
-       int max_characters = 100;
-       char f_name[max_characters];
-       file->getName(f_name, sizeof(f_name));
-       String filename = String(f_name);
-         return filename;
-     #elif STORAGE_TYPE == STORAGE_FATFS
-       return String(file->fileName());
-     #else
-       return String(file->name());
-     #endif
+        return String(file->name());
    }
    bool     exists( const char * path ) {
- #if STORAGE_TYPE == STORAGE_SPIFFS || (STORAGE_TYPE == STORAGE_SD && FTP_SERVER_NETWORK_TYPE == NETWORK_ESP8266_242)
+ #if STORAGE_TYPE == (STORAGE_TYPE == STORAGE_SD && FTP_SERVER_NETWORK_TYPE == NETWORK_ESP8266_242)
        if (strcmp(path, "/") == 0) return true;
  #endif
- #if STORAGE_TYPE == STORAGE_FFAT || (STORAGE_TYPE == STORAGE_LITTLEFS && defined(ESP32))
-       FTP_DIR f = STORAGE_MANAGER.open(path, "r");
-       return (f == true);
- #else
        return STORAGE_MANAGER.exists( path );
- #endif
    };
    bool     remove( const char * path ) { return STORAGE_MANAGER.remove( path ); };
- #if STORAGE_TYPE == STORAGE_SPIFFS
-   bool     makeDir( const char * path ) { return false; };
-   bool     removeDir( const char * path ) { return false; };
- #else
    bool     makeDir( const char * path ) { return STORAGE_MANAGER.mkdir( path ); };
    bool     removeDir( const char * path ) { return STORAGE_MANAGER.rmdir( path ); };
- #endif
  
  #if (STORAGE_TYPE == STORAGE_SD || STORAGE_TYPE == STORAGE_SD_MMC) && !defined(ESP32)
    bool     rename( const char * path, const char * newpath );
  #else
    bool     rename( const char * path, const char * newpath ) { return STORAGE_MANAGER.rename( path, newpath ); };
  #endif
- #if (STORAGE_TYPE == STORAGE_SEEED_SD)
-   bool openFile( char path[ FTP_CWD_SIZE ], int readTypeInt );
- #elif (STORAGE_TYPE == STORAGE_SD && defined(ESP8266))// FTP_SERVER_NETWORK_TYPE_SELECTED == NETWORK_ESP8266_242)
-   bool openFile( char path[ FTP_CWD_SIZE ], int readTypeInt );
- #elif (STORAGE_TYPE == STORAGE_SPIFFS || STORAGE_TYPE == STORAGE_LITTLEFS || STORAGE_TYPE == STORAGE_FFAT )
-   bool openFile( const char * path, const char * readType );
- //  bool openFile( char path[ FTP_CWD_SIZE ], int readTypeInt );
- #elif STORAGE_TYPE <= STORAGE_SDFAT2 || STORAGE_TYPE == STORAGE_SPIFM || (STORAGE_TYPE == STORAGE_SD && ARDUINO_ARCH_SAMD)
+ #if (STORAGE_TYPE == STORAGE_SD && defined(ESP8266))
    bool openFile( char path[ FTP_CWD_SIZE ], int readTypeInt );
  #else
    bool openFile( char path[ FTP_CWD_SIZE ], const char * readType );
@@ -547,88 +309,30 @@
  #endif
    uint32_t fileSize( FTP_FILE & file );
  
- #if STORAGE_TYPE == STORAGE_SPIFFS || STORAGE_TYPE == STORAGE_LITTLEFS
- #if ESP8266 || ARDUINO_ARCH_RP2040
-   uint32_t capacity() {
-       FSInfo fi;
-       STORAGE_MANAGER.info(fi);
- 
-       return fi.totalBytes >> 1;
-   };
-   uint32_t free() {
-       FSInfo fi;
-       STORAGE_MANAGER.info(fi);
- 
-       return (fi.totalBytes - fi.usedBytes) >> 1;
-   };
- #else
-   uint32_t capacity() {
-       return STORAGE_MANAGER.totalBytes() >> 1;
-   };
-   uint32_t free() {
-       return (STORAGE_MANAGER.totalBytes() -
-               STORAGE_MANAGER.usedBytes()) >> 1;
-   };
- #endif
- #elif STORAGE_TYPE == STORAGE_SD || STORAGE_TYPE == STORAGE_SD_MMC
+ #if STORAGE_TYPE == STORAGE_SD || STORAGE_TYPE == STORAGE_SD_MMC
    uint32_t capacity() { return true; };
    uint32_t free() { return true; };
- #elif STORAGE_TYPE == STORAGE_SEEED_SD
-   uint32_t capacity() {
-       return STORAGE_MANAGER.totalBytes() >> 1;
-   };
-   uint32_t free() {
-       return (STORAGE_MANAGER.totalBytes() -
-               STORAGE_MANAGER.usedBytes()) >> 1;
-   };
- #elif STORAGE_TYPE == STORAGE_SDFAT1
-   uint32_t capacity() { return STORAGE_MANAGER.card()->cardSize() >> 1; };
-   uint32_t free() { return STORAGE_MANAGER.vol()->freeClusterCount() *
-                            STORAGE_MANAGER.vol()->sectorsPerCluster() >> 1; };
- #elif STORAGE_TYPE == STORAGE_SDFAT2
-   uint32_t capacity() { return STORAGE_MANAGER.card()->sectorCount() >> 1; };
-   uint32_t free() { return STORAGE_MANAGER.vol()->freeClusterCount() *
-                            STORAGE_MANAGER.vol()->sectorsPerCluster() >> 1; };
- #elif STORAGE_TYPE == STORAGE_SPIFM
-   uint32_t capacity() { return flash.size() >> 10; };
-   uint32_t free() { return 0; };    // TODO //
- #elif STORAGE_TYPE == STORAGE_FATFS
-   uint32_t capacity() { return STORAGE_MANAGER.capacity(); };
-   uint32_t free() { return STORAGE_MANAGER.free(); };
- #elif STORAGE_TYPE == STORAGE_FFAT
-   uint32_t capacity() { return STORAGE_MANAGER.totalBytes(); };
-   uint32_t free() { return STORAGE_MANAGER.freeBytes(); };
  #endif
      bool    legalChar( char c ) // Return true if char c is allowed in a long file name
      {
          if( c == '"' || c == '*' || c == '?' || c == ':' ||
              c == '<' || c == '>' || c == '|' )
            return false;
- #if STORAGE_TYPE == STORAGE_FATFS
-         return 0x1f < c && c < 0xff;
- #else
-         return 0x1f < c && c < 0x7f;
- #endif
+    return 0x1f < c && c < 0x7f;
      }
  
    IPAddress   localIp;                // IP address of server as seen by clients
    IPAddress   dataIp;                 // IP address of client for data
    FTP_SERVER_NETWORK_SERVER_CLASS  ftpServer;
    FTP_SERVER_NETWORK_SERVER_CLASS  dataServer;
- 
- 
    FTP_CLIENT_NETWORK_CLASS  client;
    FTP_CLIENT_NETWORK_CLASS  data;
- 
    FTP_FILE     file;
    FTP_DIR      dir;
- 
    ftpCmd      cmdStage;               // stage of ftp command connection
    ftpTransfer transferStage;          // stage of data connection
    ftpDataConn dataConn;               // type of data connection
- 
    bool anonymousConnection = false;
- 
    uint8_t  __attribute__((aligned(4))) // need to be aligned to 32bit for Esp8266 SPIClass::transferBytes()
             buf[ FTP_BUF_SIZE ];       // data buffer for transfers
    char     cmdLine[ FTP_CMD_SIZE ];   // where to store incoming char from client
@@ -654,4 +358,3 @@
  };
  
  #endif // FTP_SERVER_H
- 
