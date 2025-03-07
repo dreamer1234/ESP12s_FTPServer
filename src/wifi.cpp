@@ -5,41 +5,38 @@
 *
 */
 
-
-
 #include <wifi.h>
 #include <ESP8266mDNS.h>
 #include <sdcard.h>
-#include <stdio.h>
-#include <string.h>
-
 
 #define HOSTNAME    "ESP8266"
 
 void ConnectToWifi(){
-   // WiFi credentials
-   const char* WIFI_SSID = "YOUR SSID";    		// Replace with your WiFi SSID
-   const char* WIFI_PASSWORD = "YOUR PASSWORD";    // Replace with your WiFi password
-   // InitializeSDCard();
-   // Get WiFi credentials from credentials.txt file . 
-   /* File file = SD.open("/credentials.txt", FILE_READ);
+
+  while (!SD.begin(CS_SENSE)) {
+    delay(500);
+  }
+   // Get WiFi credentials from credentials.txt file  
+   File file = SD.open("/credentials.txt", FILE_READ);
    int i=0;
-   String s,p;
+   String ssid, passwd;
    while(file.available())
     {
       if(i == 0)
-       s = file.readStringUntil('\n');
+       ssid = file.readStringUntil('\n');
       else
-       p = file.readStringUntil('\n');
+       passwd = file.readStringUntil('\n');
        i++;
     }
-    file.close(); */
+    file.close();
+   // Remove special characters Windows inserts in text files
+   ssid.trim();
+   passwd.trim();
    // Connect to WiFi network
-   Serial.println("Connecting to WiFi...");
    WiFi.mode(WIFI_STA);
    WiFi.setPhyMode(WIFI_PHY_MODE_11N);
    WiFi.hostname(HOSTNAME);
-   WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
+   WiFi.begin(ssid.c_str(), passwd.c_str());
    while (WiFi.status() != WL_CONNECTED) {
      delay(500);
      Serial.print(".");
