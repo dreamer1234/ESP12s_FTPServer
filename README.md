@@ -22,6 +22,7 @@ Image with the setup:
 - The main ESP32 board can use the SD slot all the time but when an FTP transfer is in course by the SLAVE ESP12s board (when it takes the ownership of the SD card)
 - After the FTP transfer is finished, the SLAVE ESP12s board releases the bus, so the main ESP32 board can use it.
 - DNS name added so a connection can be stablished without knowing the IP Address when the client is connecting using the same network. Name to connect by default: ESP8266
+- Simple but WiFi credentials from txt file inside the SD Card. Just change them if you change the network the board is connected without flashing the board. 
 
 # Installation
 - Steps explained in the document about compiling and installing inside the doc folder of the repository.
@@ -33,11 +34,6 @@ Image with the setup:
 - The development is in very early stage, and I'm not sure how is going to evolve or when or if it's going to be mantained.
 - The code is distributed AS-IS. I'm not responsible for any issue.
 - User and password by default: user / password . Change them in the code before compiling if you want different ones.
-- For now, change the WIFI SSID and the WIFI PASSWORD in the following lines of the wifi.cpp file:
-  
-      const char* WIFI_SSID = "YOUR SSID";    		// Replace with your WiFi SSID
-      const char* WIFI_PASSWORD = "YOUR PASSWORD";    // Replace with your WiFi password
-  
 - Keep in mind that this is a microcontroller. Despite the FTP transfers seem to work fine, do not expect the transfer to be as fast as the transfers done with your computer. I have tried several approaches and this one seems the fastest I have been able to make it work. 
 
 # TO-DO
