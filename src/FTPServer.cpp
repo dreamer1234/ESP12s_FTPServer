@@ -21,11 +21,9 @@
  {
    cmdPort = _cmdPort;
    pasvPort = _pasvPort;
- 
    millisDelay = 0;
    nbMatch = 0;
    iCL = 0;
- 
    iniVariables();
  }
  
@@ -38,20 +36,17 @@
    // Tells the ftp server to begin listening for incoming connection
    ftpServer.begin();
    #if (defined(ESP8266) && (FTP_SERVER_NETWORK_TYPE == NETWORK_ESP8266_ASYNC || FTP_SERVER_NETWORK_TYPE == NETWORK_ESP8266 || FTP_SERVER_NETWORK_TYPE == NETWORK_ESP8266_242))
-   ftpServer.setNoDelay( true );
+    ftpServer.setNoDelay( true );
    #endif
    localIp = NET_CLASS.localIP(); 
    if( strlen( _user ) > 0 && strlen( _user ) < FTP_CRED_SIZE ) {
-
-       this->user = _user;
+      this->user = _user;
    }
    if( strlen( _pass ) > 0 && strlen( _pass ) < FTP_CRED_SIZE ) {
-
       this->pass = _pass;
    }
  
    this->welcomeMessage = _welcomeMessage;
- 
    dataServer.begin();
  #if (defined(ESP8266) && (FTP_SERVER_NETWORK_TYPE == NETWORK_ESP8266_ASYNC || FTP_SERVER_NETWORK_TYPE == NETWORK_ESP8266 || FTP_SERVER_NETWORK_TYPE == NETWORK_ESP8266_242))
    dataServer.setNoDelay( true );
@@ -73,8 +68,6 @@
          disconnectClient();
          SD.end();
       }
- 
-     DEBUG_PRINTLN(F("Stop server!"));
  
      if (FtpServer::_callback) {
          FtpServer::_callback(FTP_DISCONNECT, free(), capacity());
@@ -425,20 +418,18 @@
        dataIp = localIp;
      }
  
- #if ((FTP_SERVER_NETWORK_TYPE_SELECTED == NETWORK_ESP8266_ASYNC) || (FTP_SERVER_NETWORK_TYPE_SELECTED == NETWORK_ESP8266) || (FTP_SERVER_NETWORK_TYPE_SELECTED == NETWORK_ESP8266) || (FTP_SERVER_NETWORK_TYPE_SELECTED == NETWORK_ESP32))
+ #if ((FTP_SERVER_NETWORK_TYPE_SELECTED == NETWORK_ESP8266_ASYNC) || (FTP_SERVER_NETWORK_TYPE_SELECTED == NETWORK_ESP8266) || (FTP_SERVER_NETWORK_TYPE_SELECTED == NETWORK_ESP8266))
      if (dataIp.toString() ==  F("0.0.0.0")) {
          dataIp = NET_CLASS.softAPIP();
      }
  #endif
      dataPort = pasvPort;
-       char buffer[64]; // Assicurati che sia abbastanza grande per contenere il messaggio
+       char buffer[64];
        snprintf(buffer, sizeof(buffer),
                 "227 Entering Passive Mode (%d,%d,%d,%d,%d,%d)",
                 int(dataIp[0]), int(dataIp[1]), int(dataIp[2]), int(dataIp[3]),
                 dataPort >> 8, dataPort & 255);
- 
        client.println(buffer);
- 
      dataConn = FTP_Pasive;
    }
    //
@@ -614,8 +605,6 @@
            if (FtpServer::_transferCallback) {
                FtpServer::_transferCallback(FTP_DOWNLOAD_START, parameter,  long( fileSize( file )));
            }
- 
- 
          client.print( F("150-Connected to port ") ); client.println( dataPort );
          client.print( F("150 ") ); client.print( long( fileSize( file )) ); client.println( F(" bytes to download") );
          millisBeginTrans = millis();
@@ -654,7 +643,7 @@
        data.flush();
        if( ! open ){
            client.print( F("451 Can't open/create ") ); client.println( parameter );
-       }else if( ! dataConnect()) // && !data.available())
+       }else if( ! dataConnect())
          file.close();
        else
        {
@@ -728,15 +717,11 @@
            client.print( F("521 \"") ); client.print( parameter ); client.println( F("\" directory already exists") );
        } else
        {
- #if STORAGE_TYPE != STORAGE_SPIFFS
-         if( makeDir( path )) {
+        if( makeDir( path )) {
              client.print( F("257 \"") ); client.print( parameter ); client.print( F("\"") ); client.println( F(" created") );
          } else {
- #endif
              client.print( F("550 Can't create \"") ); client.print( parameter ); client.println( F("\"") );
- #if STORAGE_TYPE != STORAGE_SPIFFS
          }
- #endif
        }
      }
    }
@@ -827,7 +812,6 @@
        uint8_t month, day, hour, minute, second, setTime;
        char dt[ 15 ];
        bool mdtm = CommandIs( "MDTM" );
- 
        setTime = getDateTime( dt, & year, & month, & day, & hour, & minute, & second );
        // fname point to file name
        fname += setTime;
@@ -944,9 +928,6 @@
   
  bool FtpServer::openDir( FTP_DIR * pdir )
  {
-       DEBUG_PRINT("OpenDIR cwdName -> ");
-       DEBUG_PRINTLN(cwdName );
- 
    bool openD;
  #if STORAGE_TYPE == STORAGE_SD || STORAGE_TYPE == STORAGE_SD_MMC
   if( strlen( cwdName ) == 0 ){
@@ -1055,10 +1036,8 @@
          data->print(time);
          data->print( F("\t") );
          if (writeFilename) data->println( fn );
-         if (writeFilename) DEBUG_PRINTLN( fn );
- 
-     } else {
 
+     } else {
  
          data->print( F("-rw-rw-r--\t1\t") );
          data->print( user );
@@ -1068,7 +1047,7 @@
          data->print(time);
          data->print( F("\t") );
          if (writeFilename) data->println( fn );
-         if (writeFilename) DEBUG_PRINTLN( fn );
+
      }
  
  }
@@ -1131,22 +1110,16 @@
  {
    if( ! dataConnected())
    {
- #if STORAGE_TYPE != STORAGE_SPIFFS && STORAGE_TYPE != STORAGE_LITTLEFS && STORAGE_TYPE != STORAGE_SEEED_SD
-     dir.close();
- #endif
+    dir.close();
      return false;
    }
  #if STORAGE_TYPE == STORAGE_SD || STORAGE_TYPE == STORAGE_SD_MMC
        FTP_FILE fileDir = dir.openNextFile();
        if( fileDir )
        {
- 
- 
          String fn = fileDir.name();
          if (fn[0]=='/') { fn.remove(0, fn.lastIndexOf("/")+1); }
- 
          generateFileLine(&data, fileDir.isDirectory(), fn.c_str(), long( fileDir.size()), "Jan 01 00:00", this->user);
- 
          nbMatch ++;
          return true;
    }
@@ -1155,9 +1128,7 @@
    if( file.openNext( &dir, FTP_FILE_READ_ONLY ))
    {
 
- 
      generateFileLine(&data, file.isDir(), "", long( fileSize( file )), "Jan 01 00:00", this->user, false);
- 
      file.printName( & data );
      data.println();
      file.close();
@@ -1166,9 +1137,7 @@
    }
  #endif
    client.print( F("226 ") ); client.print( nbMatch ); client.println( F(" matches total") );
- #if STORAGE_TYPE != STORAGE_SPIFFS && STORAGE_TYPE != STORAGE_LITTLEFS && STORAGE_TYPE != STORAGE_SEEED_SD
    dir.close();
- #endif
    data.stop();
    return false;
  }
@@ -1177,10 +1146,8 @@
  {
    if( ! dataConnected())
    {
- #if STORAGE_TYPE != STORAGE_SPIFFS && STORAGE_TYPE != STORAGE_LITTLEFS && STORAGE_TYPE != STORAGE_SEEED_SD
    dir.close();
- #endif
-     return false;
+   return false;
    }
  
 #if STORAGE_TYPE == STORAGE_SD || STORAGE_TYPE == STORAGE_SD_MMC
@@ -1188,16 +1155,13 @@
        if( fileDir )
        {
          char dtStr[ 15 ];
- 
-         // struct tm * timeinfo;
- 
          strcpy(dtStr, "19700101000000");
          String fn = fileDir.name();
          fn.remove(0, fn.lastIndexOf("/")+1);
          long fz = fileDir.size();
          data.print( F("Type=") );
          data.print( ( fileDir.isDirectory() ? F("dir") : F("file")) );
-         data.print( F(";Modify=") ); data.print(dtStr);// data.print( makeDateTimeStr( dtStr, time, time) );
+         data.print( F(";Modify=") ); data.print(dtStr);
          data.print( F(";Size=") ); data.print( fz );
          data.print( F("; ") ); data.println( fn );
          nbMatch ++;
@@ -1224,9 +1188,6 @@
  #endif
    client.println(F("226-options: -a -l") );
    client.print( F("226 ") ); client.print( nbMatch ); client.println( F(" matches total") );
- #if STORAGE_TYPE != STORAGE_SPIFFS && STORAGE_TYPE != STORAGE_LITTLEFS && STORAGE_TYPE != STORAGE_SEEED_SD && STORAGE_TYPE != STORAGE_SEEED_SD
-     dir.close();
- #endif
    data.stop();
    return false;
  }
@@ -1257,24 +1218,19 @@
        if (FtpServer::_transferCallback) {
            FtpServer::_transferCallback(FTP_TRANSFER_ERROR, getFileName(&file).c_str(), bytesTransfered);
        }
- 
-       file.close();
- #if STORAGE_TYPE != STORAGE_SPIFFS && STORAGE_TYPE != STORAGE_LITTLEFS && STORAGE_TYPE != STORAGE_SEEED_SD
+     file.close();
      dir.close();
- #endif
      client.println(F("426 Transfer aborted") );
      transferStage = FTP_Close;
    }
    data.stop(); 
    restartPos = 0; // Reset restart position on abort
    SD.end();
- 
  }
  
  int32_t FtpServer::readChar()
  {
    int8_t rc = -1;
- 
    if( client.available())
    {
      char c = client.read();
@@ -1368,64 +1324,49 @@
      return true;
    }
  
-   // Usa workingDir per tenere conto dei ".." modificati
    char workingDir[FTP_CWD_SIZE];
    strcpy( workingDir, cwdName );
-   // Processa eventuali sequenze iniziali "../" (incluso il caso di una sola "..")
-   // Ad ogni iterazione viene rimosso un livello dalla workingDir
    while ( (strncmp(param, "../", 3) == 0) || (strcmp(param, "..") == 0) )
    {
-     // Rimuovi la slash finale da workingDir se presente (salvaguardando la root)
      int len = strlen( workingDir );
      if (len > 1 && workingDir[len - 1] == '/')
        workingDir[len - 1] = '\0';
-     // Trova l'ultima slash per individuare il livello superiore
      char *lastSlash = strrchr( workingDir, '/' );
      if (lastSlash != NULL)
      {
-       // Se l'unica slash � quella iniziale, siamo alla root
        if (lastSlash == workingDir)
        {
-         workingDir[1] = '\0';  // Rimani in "/"
+         workingDir[1] = '\0';
        }
        else
        {
-         *lastSlash = '\0';  // Rimuovi l'ultimo componente
+         *lastSlash = '\0';
        }
      }
      else
      {
-       // Caso imprevisto: torna in root
        strcpy( workingDir, "/" );
      }
  
-     // Avanza il puntatore nel parametro:
-     // Se param � esattamente "..", salta quei 2 caratteri e interrompi il ciclo.
      if (strcmp(param, "..") == 0)
      {
-       param += 2; // Salta ".."
+       param += 2;
        break;
      }
      else
      {
-       // Altrimenti, param inizia con "../": salta i primi 3 caratteri.
        param += 3;
      }
    }
- 
-   // Gestione del prefisso "./"
    if( strncmp( param, "./", 2 ) == 0 )
    {
-     param += 2; // Salta "./"
-     // Se dopo "./" non c'� nulla, restituisce la workingDir aggiornata
+     param += 2;
      if (*param == '\0')
      {
        strcpy( fullName, workingDir );
        return true;
      }
    }
- 
-   // Se il percorso � relativo, concatenalo con workingDir (aggiornato dai "../")
    if( param[0] != '/' ) 
    {
      strcpy( fullName, workingDir );
@@ -1435,8 +1376,6 @@
    }
    else
      strcpy( fullName, param );
- 
-   // Rimuovi una eventuale slash finale in eccesso (se non si tratta della root)
    uint16_t strl = strlen( fullName ) - 1;
    if( fullName[strl] == '/' && strl > 1 )
      fullName[strl] = '\0';
@@ -1467,7 +1406,6 @@
        return false;
    }
  #endif
- 
    return true;
  }
  
@@ -1475,7 +1413,7 @@
  {
    if( ! makePath( path, param ))
      return false;
-   // RoSchmi
+
  #if (STORAGE_TYPE == STORAGE_TYPE == STORAGE_SD || STORAGE_TYPE == STORAGE_SD_MMC)
    if (strcmp(path, "/") == 0)  return true;
  #endif
@@ -1558,11 +1496,7 @@
  
  
  uint32_t FtpServer::fileSize( FTP_FILE & file ) {
- #if (STORAGE_TYPE == STORAGE_SDFAT2 || STORAGE_TYPE == STORAGE_SD || STORAGE_TYPE == STORAGE_SD_MMC)
-     return file.size();
- #else
-     return file.fileSize();
- #endif
+    return file.size();
  }
  
 #if ((STORAGE_TYPE == STORAGE_SD || STORAGE_TYPE == STORAGE_SD_MMC) && defined(ESP8266))
@@ -1572,16 +1506,6 @@
          }else {
              readTypeInt = FILE_WRITE;
          }
- 
-         file = STORAGE_MANAGER.open( path, readTypeInt );
-         if (!file) { // && readTypeInt[0]==FILE_READ) {
-             return false;
-         }else{
-             return true;
-         }
- }
- #elif STORAGE_TYPE <= STORAGE_SDFAT2 
-   bool FtpServer::openFile( char path[ FTP_CWD_SIZE ], int readTypeInt ){
          file = STORAGE_MANAGER.open( path, readTypeInt );
          if (!file) {
              return false;
@@ -1589,13 +1513,12 @@
              return true;
          }
  }
- 
  #else
    bool FtpServer::openFile( char path[ FTP_CWD_SIZE ], const char * readType ) {
        return openFile( (const char*) path, readType );
    }
    bool FtpServer::openFile( const char * path, const char * readType ) {
-   #if ((STORAGE_TYPE == STORAGE_SD || STORAGE_TYPE == STORAGE_SD_MMC) && !defined(ESP32))
+   #if ((STORAGE_TYPE == STORAGE_SD || STORAGE_TYPE == STORAGE_SD_MMC))
            if (readType == 0X01) {
                readType = FILE_READ;
            }else {
@@ -1614,54 +1537,27 @@
  // Return true if path points to a directory
  bool FtpServer::isDir( char * path )
  {
- #if STORAGE_TYPE == STORAGE_SDFAT1 || STORAGE_TYPE == STORAGE_SDFAT2
- //  bool res = (!dir.open(path, FTP_FILE_READ) || !dir.isDir());
- //  dir.close();
- //  return res;
-   if (strcmp(path, "/") == 0)  { return true; }
-   if( ! openFile( path, FTP_FILE_READ )) {
-       return false;
-     }
-   return true;
- #else
    FTP_FILE file;
    bool res;
-   
    if( ! openFile( path, FTP_FILE_READ )) {
      return false;
    }
  #if STORAGE_TYPE == STORAGE_SD || STORAGE_TYPE == STORAGE_SD_MMC
-
    return true;
  #else
  #endif
    file.close();
    return res;
- #endif
  }
  
  bool FtpServer::timeStamp( char * path, uint16_t year, uint8_t month, uint8_t day,
                             uint8_t hour, uint8_t minute, uint8_t second )
  {
- #if STORAGE_TYPE == STORAGE_SD || STORAGE_TYPE == STORAGE_SD_MMC
-
- 
-     return true;
- #else
-   FTP_FILE file;
-   bool res;
- 
-   if( ! openFile( path, FTP_FILE_READ_WRITE ))
-     return false;
-   res = file.timestamp( T_WRITE, year, month, day, hour, minute, second );
-   file.close();
-   return res;
- #endif
+    return true;
  }
                          
  bool FtpServer::getFileModTime( char * path, uint16_t * pdate, uint16_t * ptime )
  {
- //  FTP_FILE file;
    bool res;
    if( ! openFile( path, FTP_FILE_READ )) {
      return false;
@@ -1671,22 +1567,16 @@
    return res;
  }
  
- // Assume SD library is SdFat (or family) and file is open
-                         
- #if STORAGE_TYPE != STORAGE_FATFS
  bool FtpServer::getFileModTime( uint16_t * pdate, uint16_t * ptime )
  {
    return false;
  }
- #endif
  
- #if (STORAGE_TYPE == STORAGE_SD || STORAGE_TYPE == STORAGE_SD_MMC) && !defined(ESP32)
+ #if (STORAGE_TYPE == STORAGE_SD || STORAGE_TYPE == STORAGE_SD_MMC)
    bool     FtpServer::rename( const char * path, const char * newpath ){
- 
          FTP_FILE myFileIn = STORAGE_MANAGER.open(path, FILE_READ);
          FTP_FILE myFileOut = STORAGE_MANAGER.open(newpath, FILE_WRITE);
- 
-         if(myFileOut) {
+          if(myFileOut) {
              while (myFileIn.available() > 0)
                    {
                      int i = myFileIn.readBytes((char*)buf, FTP_BUF_SIZE);
@@ -1695,7 +1585,6 @@
                    // done, close the destination file
                  myFileOut.close();
                  myFileOut = STORAGE_MANAGER.open(newpath, FILE_READ);
- 
          }
          bool operation = false;
          if (myFileIn.size() == myFileOut.size()) {
