@@ -101,12 +101,8 @@
              #include <ESP31BWiFi.h>
          #endif
          #define FTP_CLIENT_NETWORK_CLASS WiFiClient
-         //#define FTP_CLIENT_NETWORK_SSL_CLASS WiFiClientSecure
          #define FTP_SERVER_NETWORK_SERVER_CLASS WiFiServer
          #define NET_CLASS WiFi
- //		#define CommandIs( a ) (command != NULL && ! strcmp_P( command, PSTR( a )))
- //		#define ParameterIs( a ) ( parameter != NULL && ! strcmp_P( parameter, PSTR( a )))
-
  #else
      #error "no network type selected!"
  #endif
@@ -129,13 +125,8 @@
  
      #define FTP_FILE_READ FILE_READ
      #define FTP_FILE_READ_ONLY FILE_READ
- #ifdef ESP32
-     #define FTP_FILE_READ_WRITE FILE_WRITE
-     #define FTP_FILE_WRITE_APPEND FILE_APPEND
- #else
      #define FTP_FILE_READ_WRITE FILE_WRITE
      #define FTP_FILE_WRITE_APPEND FILE_WRITE
- #endif
      #define FTP_FILE_WRITE_CREATE FILE_WRITE
  
      #define FILENAME_LENGTH 255
@@ -164,17 +155,7 @@
  #endif
  
  
- #define OPEN_CLOSE_SPIFFS
- #define OPEN_CLOSE_SD
- 
- // Setup debug printing macros.
- #ifdef FTP_SERVER_DEBUG
-     #define DEBUG_PRINT(...) { DEBUG_PRINTER.print(__VA_ARGS__); }
-     #define DEBUG_PRINTLN(...) { DEBUG_PRINTER.println(__VA_ARGS__); }
- #else
-     #define DEBUG_PRINT(...) {}
-     #define DEBUG_PRINTLN(...) {}
- #endif
+#define OPEN_CLOSE_SD
  
  #define FTP_CMD_PORT 21           // Command port on which server is listening
  #define FTP_DATA_PORT_DFLT 20     // Default data port in active mode
@@ -214,15 +195,11 @@
  enum FtpTransferOperation {
        FTP_UPLOAD_START = 0,
        FTP_UPLOAD = 1,
- 
        FTP_DOWNLOAD_START = 2,
        FTP_DOWNLOAD = 3,
- 
- 
        FTP_TRANSFER_STOP = 4,
        FTP_DOWNLOAD_STOP = 4,
        FTP_UPLOAD_STOP = 4,
- 
        FTP_TRANSFER_ERROR = 5,
        FTP_DOWNLOAD_ERROR = 5,
        FTP_UPLOAD_ERROR = 5
@@ -235,9 +212,8 @@
  
    void    begin( const char * _user, const char * _pass, const char * welcomeMessage = "Welcome to Simply FTP server" );
    void    begin( const char * welcomeMessage = "Welcome to Simply FTP server" );
- 
-   void 	  end();
-   void 	  setLocalIp(IPAddress localIp);
+   void    end();
+   void    setLocalIp(IPAddress localIp);
    void    credentials( const char * _user, const char * _pass );
    uint8_t handleFTP();
  
@@ -278,9 +254,7 @@
    bool    timeStamp( char * path, uint16_t year, uint8_t month, uint8_t day,
                       uint8_t hour, uint8_t minute, uint8_t second );
    bool    getFileModTime( char * path, uint16_t * pdate, uint16_t * ptime );
- #if STORAGE_TYPE != STORAGE_FATFS
    bool    getFileModTime( uint16_t * pdate, uint16_t * ptime );
- #endif
    int32_t readChar();
  
    const String getFileName(FTP_FILE *file){
@@ -296,7 +270,7 @@
    bool     makeDir( const char * path ) { return STORAGE_MANAGER.mkdir( path ); };
    bool     removeDir( const char * path ) { return STORAGE_MANAGER.rmdir( path ); };
  
- #if (STORAGE_TYPE == STORAGE_SD || STORAGE_TYPE == STORAGE_SD_MMC) && !defined(ESP32)
+ #if (STORAGE_TYPE == STORAGE_SD || STORAGE_TYPE == STORAGE_SD_MMC)
    bool     rename( const char * path, const char * newpath );
  #else
    bool     rename( const char * path, const char * newpath ) { return STORAGE_MANAGER.rename( path, newpath ); };
