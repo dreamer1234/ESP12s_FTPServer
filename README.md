@@ -5,6 +5,14 @@ FTP Server over with SD card support using FAT filesystem.
 - Lots of other sources like forums and personal code.
 
 # Description
+I found this interesting idea: https://github.com/ardyesp/ESPWebDAV where the creator takes the lines of an SD Card slot to connect an ESP8266 with an SD Card. That repository is very outdated now but from that site we can see the following diagram:
+
+
+
+
+
+
+
 The idea behind this project is to have a little board (ESP12s) that connects to WiFi and acts as and FTP Server, at the same time that is sharing the SD card slot with other board that is using it. 
 
 In this case, the code has been developed and tested with the board BTT-SD-TF-Cloud-V1.0: https://github.com/bigtreetech/BTT-SD-TF-Cloud-V1.0
