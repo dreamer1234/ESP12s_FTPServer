@@ -5,7 +5,7 @@ FTP Server over with SD card support using FAT filesystem.
 - Lots of other sources like forums and personal code.
 
 # Description
-I found this interesting idea: https://github.com/ardyesp/ESPWebDAV where the creator takes the lines of an SD Card slot to connect an ESP8266 with an SD Card. That repository is very outdated now but from that site we can see the following diagram:
+I found this interesting idea: https://github.com/ardyesp/ESPWebDAV where the creator takes the lines of an SD Card slot to connect an ESP8266 with an SD Card. That repository is pretty outdated now but from that site we can see the following diagram:
 
 ![Schema](https://github.com/user-attachments/assets/9f13e75e-190f-4155-944f-f667dd1c54b4)
 (Image taken from that ESPWebDAV project)
