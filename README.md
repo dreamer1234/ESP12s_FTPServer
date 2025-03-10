@@ -10,7 +10,7 @@ I found this interesting idea: https://github.com/ardyesp/ESPWebDAV where the cr
 ![Schema](https://github.com/user-attachments/assets/9f13e75e-190f-4155-944f-f667dd1c54b4)
 (Image taken from that ESPWebDAV project)
 
-The idea behind this project is to have a little board (ESP12s) that connects to WiFi and acts as and FTP Server, at the same time that is sharing the SD card slot with other board that is using it. 
+Using that diagram, the idea behind the project I'm describing, is to have a little board (ESP12s) that connects to WiFi and acts as and FTP Server, at the same time that is sharing the SD card slot with other board that is using it. 
 
 In this case, the code has been developed and tested with the board BTT-SD-TF-Cloud-V1.0: https://github.com/bigtreetech/BTT-SD-TF-Cloud-V1.0
 
