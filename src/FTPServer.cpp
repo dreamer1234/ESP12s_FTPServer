@@ -74,8 +74,6 @@
          SD.end();
       }
  
-     DEBUG_PRINTLN(F("Stop server!"));
- 
      if (FtpServer::_callback) {
          FtpServer::_callback(FTP_DISCONNECT, free(), capacity());
      }
@@ -944,9 +942,6 @@
   
  bool FtpServer::openDir( FTP_DIR * pdir )
  {
-       DEBUG_PRINT("OpenDIR cwdName -> ");
-       DEBUG_PRINTLN(cwdName );
- 
    bool openD;
  #if STORAGE_TYPE == STORAGE_SD || STORAGE_TYPE == STORAGE_SD_MMC
   if( strlen( cwdName ) == 0 ){
@@ -1055,8 +1050,6 @@
          data->print(time);
          data->print( F("\t") );
          if (writeFilename) data->println( fn );
-         if (writeFilename) DEBUG_PRINTLN( fn );
- 
      } else {
 
  
@@ -1068,7 +1061,6 @@
          data->print(time);
          data->print( F("\t") );
          if (writeFilename) data->println( fn );
-         if (writeFilename) DEBUG_PRINTLN( fn );
      }
  
  }
