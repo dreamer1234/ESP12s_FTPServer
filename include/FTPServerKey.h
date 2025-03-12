@@ -17,8 +17,6 @@
  #ifndef FTP_SERVER_CONFIG_H
  #define FTP_SERVER_CONFIG_H
  
- #define STORAGE_SDFAT1 		1 	// Library SdFat version 1.4.x
- #define STORAGE_SDFAT2 		2 	// Library SdFat version >= 2.0.2
  #define STORAGE_SD 			5 	// Standard SD library (suitable for Arduino esp8266 and esp32
  #define STORAGE_SD_MMC		10 	// SD_MMC library
  

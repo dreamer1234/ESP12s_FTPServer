@@ -34,41 +34,23 @@
 
  #if !defined(FTP_SERVER_NETWORK_TYPE)
  // select Network type based
-     #if defined(ESP8266)
-         #if(NETWORK_ESP8266_242 == DEFAULT_FTP_SERVER_NETWORK_TYPE_ESP8266)
-             #define ARDUINO_ESP8266_RELEASE_2_4_2
- 
-             #define FTP_SERVER_NETWORK_TYPE_SELECTED NETWORK_ESP8266_242
- 
-             #define FTP_SERVER_NETWORK_TYPE NETWORK_ESP8266
-         #else
-             #define FTP_SERVER_NETWORK_TYPE DEFAULT_FTP_SERVER_NETWORK_TYPE_ESP8266
-         #endif
- 
-         #define STORAGE_TYPE DEFAULT_STORAGE_TYPE_ESP8266
-     #elif defined(ESP32)
-         #define FTP_SERVER_NETWORK_TYPE DEFAULT_FTP_SERVER_NETWORK_TYPE_ESP32
-         #define STORAGE_TYPE DEFAULT_STORAGE_TYPE_ESP32
-     #endif
+        #if(NETWORK_ESP8266_242 == DEFAULT_FTP_SERVER_NETWORK_TYPE_ESP8266)
+            #define ARDUINO_ESP8266_RELEASE_2_4_2
+            #define FTP_SERVER_NETWORK_TYPE_SELECTED NETWORK_ESP8266_242
+            #define FTP_SERVER_NETWORK_TYPE NETWORK_ESP8266
+        #else
+            #define FTP_SERVER_NETWORK_TYPE DEFAULT_FTP_SERVER_NETWORK_TYPE_ESP8266
+        #endif
+        #define STORAGE_TYPE DEFAULT_STORAGE_TYPE_ESP8266
  #endif
  
  #ifndef FTP_SERVER_NETWORK_TYPE_SELECTED
      #define FTP_SERVER_NETWORK_TYPE_SELECTED FTP_SERVER_NETWORK_TYPE
  #endif
  
- 
- #if defined(ESP8266)
-     #ifndef STORAGE_SD_FORCE_DISABLE
-         #define STORAGE_SD_ENABLED
-     #endif
-     #ifndef STORAGE_SPIFFS_FORCE_DISABLE
-         #define STORAGE_SPIFFS_ENABLED
-     #endif
- #else
-     #ifndef STORAGE_SD_FORCE_DISABLE
-         #define STORAGE_SD_ENABLED
-     #endif
- #endif
+#ifndef STORAGE_SD_FORCE_DISABLE
+     #define STORAGE_SD_ENABLED
+#endif
  
  
  // Includes and defined based on Network Type
@@ -77,29 +59,13 @@
      // Note:
      //   No SSL/WSS support for client in Async mode
      //   TLS lib need a sync interface!
- 
-     #if defined(ESP8266)
-         #include <ESP8266WiFi.h>
-         //#include <WiFiClientSecure.h>
-         #define FTP_CLIENT_NETWORK_CLASS WiFiClient
-         //#define FTP_CLIENT_NETWORK_SSL_CLASS WiFiClientSecure
-         #define FTP_SERVER_NETWORK_SERVER_CLASS WiFiServer
+    #include <ESP8266WiFi.h>
+    #define FTP_CLIENT_NETWORK_CLASS WiFiClient
+    #define FTP_SERVER_NETWORK_SERVER_CLASS WiFiServer
 
-     #else
-         #error "network type ESP8266 ASYNC only possible on the ESP mcu!"
-     #endif
- 
  #elif(FTP_SERVER_NETWORK_TYPE == NETWORK_ESP8266 || FTP_SERVER_NETWORK_TYPE == NETWORK_ESP8266_242)
  
-         #if !defined(ESP8266)
-             #error "network type ESP8266 only possible on the ESP mcu!"
-         #endif
- 
-         #ifdef ESP8266
-             #include <ESP8266WiFi.h>
-         #else
-             #include <ESP31BWiFi.h>
-         #endif
+         #include <ESP8266WiFi.h>
          #define FTP_CLIENT_NETWORK_CLASS WiFiClient
          #define FTP_SERVER_NETWORK_SERVER_CLASS WiFiServer
          #define NET_CLASS WiFi
@@ -107,13 +73,8 @@
      #error "no network type selected!"
  #endif
  
- #if defined(ESP8266)
-     #define CommandIs( a ) (command != NULL && ! strcmp_P( command, PSTR( a )))
-     #define ParameterIs( a ) ( parameter != NULL && ! strcmp_P( parameter, PSTR( a )))
- #else
-     #define CommandIs( a ) ( ! strcmp_PF( command, PSTR( a )))
-     #define ParameterIs( a ) ( ! strcmp_PF( parameter, PSTR( a )))
- #endif
+#define CommandIs( a ) (command != NULL && ! strcmp_P( command, PSTR( a )))
+#define ParameterIs( a ) ( parameter != NULL && ! strcmp_P( parameter, PSTR( a )))
  
  #if(STORAGE_TYPE == STORAGE_SD)
      #include <SPI.h>
@@ -261,7 +222,7 @@
         return String(file->name());
    }
    bool     exists( const char * path ) {
- #if STORAGE_TYPE == (STORAGE_TYPE == STORAGE_SD && FTP_SERVER_NETWORK_TYPE == NETWORK_ESP8266_242)
+ #if STORAGE_TYPE == (FTP_SERVER_NETWORK_TYPE == NETWORK_ESP8266_242)
        if (strcmp(path, "/") == 0) return true;
  #endif
        return STORAGE_MANAGER.exists( path );
@@ -269,32 +230,18 @@
    bool     remove( const char * path ) { return STORAGE_MANAGER.remove( path ); };
    bool     makeDir( const char * path ) { return STORAGE_MANAGER.mkdir( path ); };
    bool     removeDir( const char * path ) { return STORAGE_MANAGER.rmdir( path ); };
- 
- #if (STORAGE_TYPE == STORAGE_SD || STORAGE_TYPE == STORAGE_SD_MMC)
    bool     rename( const char * path, const char * newpath );
- #else
-   bool     rename( const char * path, const char * newpath ) { return STORAGE_MANAGER.rename( path, newpath ); };
- #endif
- #if (STORAGE_TYPE == STORAGE_SD && defined(ESP8266))
    bool openFile( char path[ FTP_CWD_SIZE ], int readTypeInt );
- #else
-   bool openFile( char path[ FTP_CWD_SIZE ], const char * readType );
-   bool openFile( const char * path, const char * readType );
- #endif
    uint32_t fileSize( FTP_FILE & file );
- 
- #if STORAGE_TYPE == STORAGE_SD || STORAGE_TYPE == STORAGE_SD_MMC
    uint32_t capacity() { return true; };
    uint32_t free() { return true; };
- #endif
-     bool    legalChar( char c ) // Return true if char c is allowed in a long file name
-     {
-         if( c == '"' || c == '*' || c == '?' || c == ':' ||
-             c == '<' || c == '>' || c == '|' )
-           return false;
-    return 0x1f < c && c < 0x7f;
-     }
- 
+    bool    legalChar( char c ) // Return true if char c is allowed in a long file name
+    {
+        if( c == '"' || c == '*' || c == '?' || c == ':' ||
+            c == '<' || c == '>' || c == '|' )
+          return false;
+   return 0x1f < c && c < 0x7f;
+    }
    IPAddress   localIp;                // IP address of server as seen by clients
    IPAddress   dataIp;                 // IP address of client for data
    FTP_SERVER_NETWORK_SERVER_CLASS  ftpServer;
