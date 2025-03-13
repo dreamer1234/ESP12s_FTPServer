@@ -52,30 +52,12 @@
      #define STORAGE_SD_ENABLED
 #endif
  
- 
- // Includes and defined based on Network Type
- #if(FTP_SERVER_NETWORK_TYPE == NETWORK_ESP8266_ASYNC)
- 
-     // Note:
-     //   No SSL/WSS support for client in Async mode
-     //   TLS lib need a sync interface!
-    #include <ESP8266WiFi.h>
-    #define FTP_CLIENT_NETWORK_CLASS WiFiClient
-    #define FTP_SERVER_NETWORK_SERVER_CLASS WiFiServer
-
- #elif(FTP_SERVER_NETWORK_TYPE == NETWORK_ESP8266 || FTP_SERVER_NETWORK_TYPE == NETWORK_ESP8266_242)
- 
-         #include <ESP8266WiFi.h>
-         #define FTP_CLIENT_NETWORK_CLASS WiFiClient
-         #define FTP_SERVER_NETWORK_SERVER_CLASS WiFiServer
-         #define NET_CLASS WiFi
- #else
-     #error "no network type selected!"
- #endif
- 
+#include <ESP8266WiFi.h>
+#define FTP_CLIENT_NETWORK_CLASS WiFiClient
+#define FTP_SERVER_NETWORK_SERVER_CLASS WiFiServer
+#define NET_CLASS WiFi
 #define CommandIs( a ) (command != NULL && ! strcmp_P( command, PSTR( a )))
 #define ParameterIs( a ) ( parameter != NULL && ! strcmp_P( parameter, PSTR( a )))
-
 #include <SPI.h>
 #include <SD.h>
 #define STORAGE_MANAGER SD
@@ -206,7 +188,7 @@
    uint32_t fileSize( FTP_FILE & file );
    uint32_t capacity() { return true; };
    uint32_t free() { return true; };
-    bool    legalChar( char c ) // Return true if char c is allowed in a long file name
+   bool    legalChar( char c ) // Return true if char c is allowed in a long file name
     {
         if( c == '"' || c == '*' || c == '?' || c == ':' ||
             c == '<' || c == '>' || c == '|' )
