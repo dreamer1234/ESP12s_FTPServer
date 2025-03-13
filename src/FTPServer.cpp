@@ -904,8 +904,7 @@
  bool FtpServer::openDir( FTP_DIR * pdir )
  {
    bool openD;
- #if STORAGE_TYPE == STORAGE_SD || STORAGE_TYPE == STORAGE_SD_MMC
-  if( strlen( cwdName ) == 0 ){
+   if( strlen( cwdName ) == 0 ){
          dir = STORAGE_MANAGER.open( "/" );
        } else {
          dir = STORAGE_MANAGER.open( cwdName );
@@ -914,7 +913,6 @@
        if( ! openD ) {
          client.print( F("550 Can't open directory ") ); client.println( cwdName );
        }
- #endif
    return openD;
  }
  
@@ -1018,7 +1016,6 @@
  
  }
  
- #if defined(ESP8266)
  //
  // Formats printable String from a time_t timestamp
  //
@@ -1068,7 +1065,7 @@
  void generateFileLine(FTP_CLIENT_NETWORK_CLASS* data, bool isDirectory, const char* fn, long fz, time_t time, const char* user, bool writeFilename = true) {
      generateFileLine(data, isDirectory, fn, fz, makeDateTimeStrList(time).c_str(), user, writeFilename);
  }
- #endif
+
  
  bool FtpServer::doList()
  {
@@ -1077,7 +1074,6 @@
     dir.close();
      return false;
    }
- #if STORAGE_TYPE == STORAGE_SD || STORAGE_TYPE == STORAGE_SD_MMC
        FTP_FILE fileDir = dir.openNextFile();
        if( fileDir )
        {
@@ -1087,7 +1083,6 @@
          nbMatch ++;
          return true;
    }
- #endif
    client.print( F("226 ") ); client.print( nbMatch ); client.println( F(" matches total") );
    dir.close();
    data.stop();
@@ -1102,24 +1097,22 @@
    return false;
    }
  
-#if STORAGE_TYPE == STORAGE_SD || STORAGE_TYPE == STORAGE_SD_MMC
-       File fileDir = dir.openNextFile();
-       if( fileDir )
-       {
-         char dtStr[ 15 ];
-         strcpy(dtStr, "19700101000000");
-         String fn = fileDir.name();
-         fn.remove(0, fn.lastIndexOf("/")+1);
-         long fz = fileDir.size();
-         data.print( F("Type=") );
-         data.print( ( fileDir.isDirectory() ? F("dir") : F("file")) );
-         data.print( F(";Modify=") ); data.print(dtStr);
-         data.print( F(";Size=") ); data.print( fz );
-         data.print( F("; ") ); data.println( fn );
-         nbMatch ++;
-         return true;
-       }
- #endif
+      File fileDir = dir.openNextFile();
+      if( fileDir )
+      {
+        char dtStr[ 15 ];
+        strcpy(dtStr, "19700101000000");
+        String fn = fileDir.name();
+        fn.remove(0, fn.lastIndexOf("/")+1);
+        long fz = fileDir.size();
+        data.print( F("Type=") );
+        data.print( ( fileDir.isDirectory() ? F("dir") : F("file")) );
+        data.print( F(";Modify=") ); data.print(dtStr);
+        data.print( F(";Size=") ); data.print( fz );
+        data.print( F("; ") ); data.println( fn );
+        nbMatch ++;
+        return true;
+      }
    client.println(F("226-options: -a -l") );
    client.print( F("226 ") ); client.print( nbMatch ); client.println( F(" matches total") );
    data.stop();
@@ -1377,7 +1370,7 @@
  {
    uint8_t i;
    dt[ 0 ] = 0;
-   if( strlen( parameter ) < 15 ) //|| parameter[ 14 ] != ' ' )
+   if( strlen( parameter ) < 15 )
      return 0;
    for( i = 0; i < 14; i ++ )
      if( ! isdigit( parameter[ i ]))
