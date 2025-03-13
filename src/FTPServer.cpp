@@ -187,7 +187,7 @@
  void FtpServer::disconnectClient()
  {
    abortTransfer();
-   UnmountSDCard();
+   SD.end();
    client.println(F("221 Goodbye") );
     
    if (FtpServer::_callback) {
