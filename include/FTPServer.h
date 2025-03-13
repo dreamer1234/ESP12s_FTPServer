@@ -75,59 +75,31 @@
  
 #define CommandIs( a ) (command != NULL && ! strcmp_P( command, PSTR( a )))
 #define ParameterIs( a ) ( parameter != NULL && ! strcmp_P( parameter, PSTR( a )))
- 
- #if(STORAGE_TYPE == STORAGE_SD)
-     #include <SPI.h>
-     #include <SD.h>
- 
-     #define STORAGE_MANAGER SD
-       #define FTP_FILE File
-       #define FTP_DIR File
- 
-     #define FTP_FILE_READ FILE_READ
-     #define FTP_FILE_READ_ONLY FILE_READ
-     #define FTP_FILE_READ_WRITE FILE_WRITE
-     #define FTP_FILE_WRITE_APPEND FILE_WRITE
-     #define FTP_FILE_WRITE_CREATE FILE_WRITE
- 
-     #define FILENAME_LENGTH 255
- #elif(STORAGE_TYPE == STORAGE_SD_MMC)
-     #include <SPI.h>
-     #include <SD_MMC.h>
- 
-     #define STORAGE_MANAGER SD_MMC
-       #define FTP_FILE File
-       #define FTP_DIR File
- 
-     #define FTP_FILE_READ FILE_READ
-     #define FTP_FILE_READ_ONLY FILE_READ
-     #define FTP_FILE_READ_WRITE FILE_WRITE
- #ifdef ESP32
-     #define FTP_FILE_READ_WRITE FILE_WRITE
-     #define FTP_FILE_WRITE_APPEND FILE_APPEND
- #else
-     #define FTP_FILE_READ_WRITE FILE_WRITE
-     #define FTP_FILE_WRITE_APPEND FILE_WRITE
- #endif
-     #define FTP_FILE_WRITE_CREATE FILE_WRITE
- 
-     #define FILENAME_LENGTH 255
- 
- #endif
+
+#include <SPI.h>
+#include <SD.h>
+#define STORAGE_MANAGER SD
+#define FTP_FILE File
+#define FTP_DIR File
+#define FTP_FILE_READ FILE_READ
+#define FTP_FILE_READ_ONLY FILE_READ
+#define FTP_FILE_READ_WRITE FILE_WRITE
+#define FTP_FILE_WRITE_APPEND FILE_WRITE
+#define FTP_FILE_WRITE_CREATE FILE_WRITE
+#define FILENAME_LENGTH 255
  
  
 #define OPEN_CLOSE_SD
  
- #define FTP_CMD_PORT 21           // Command port on which server is listening
- #define FTP_DATA_PORT_DFLT 20     // Default data port in active mode
- #define FTP_DATA_PORT_PASV 50009  // Data port in passive mode
- 
- #define FF_MAX_LFN 255            // max size of a long file name
- #define FTP_CMD_SIZE FF_MAX_LFN+8 // max size of a command
- #define FTP_CWD_SIZE FF_MAX_LFN+8 // max size of a directory name
- #define FTP_FIL_SIZE FF_MAX_LFN   // max size of a file name
- #define FTP_CRED_SIZE 16          // max size of username and password
- #define FTP_NULLIP() IPAddress(0,0,0,0)
+#define FTP_CMD_PORT 21           // Command port on which server is listening
+#define FTP_DATA_PORT_DFLT 20     // Default data port in active mode
+#define FTP_DATA_PORT_PASV 50009  // Data port in passive mode
+#define FF_MAX_LFN 255            // max size of a long file name
+#define FTP_CMD_SIZE FF_MAX_LFN+8 // max size of a command
+#define FTP_CWD_SIZE FF_MAX_LFN+8 // max size of a directory name
+#define FTP_FIL_SIZE FF_MAX_LFN   // max size of a file name
+#define FTP_CRED_SIZE 16          // max size of username and password
+#define FTP_NULLIP() IPAddress(0,0,0,0)
  
  enum ftpCmd { FTP_Stop = 0,       //  In this stage, stop any connection
                FTP_Init,           //  initialize some variables
@@ -191,7 +163,6 @@
  private:
    void (*_callback)(FtpOperation ftpOperation, unsigned int freeSpace, unsigned int totalSpace){};
    void (*_transferCallback)(FtpTransferOperation ftpOperation, const char* name, unsigned int transferredSize){};
- 
    void    iniVariables();
    void    clientConnected();
    void    disconnectClient();
