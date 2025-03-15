@@ -33,48 +33,49 @@
  #endif
 
  #if !defined(FTP_SERVER_NETWORK_TYPE)
-    #define FTP_SERVER_NETWORK_TYPE DEFAULT_FTP_SERVER_NETWORK_TYPE_ESP8266
-    #define STORAGE_TYPE DEFAULT_STORAGE_TYPE_ESP8266
+ // select Network type based
+      #define FTP_SERVER_NETWORK_TYPE DEFAULT_FTP_SERVER_NETWORK_TYPE_ESP8266
+      #define STORAGE_TYPE DEFAULT_STORAGE_TYPE_ESP8266
  #endif
  
  #ifndef FTP_SERVER_NETWORK_TYPE_SELECTED
      #define FTP_SERVER_NETWORK_TYPE_SELECTED FTP_SERVER_NETWORK_TYPE
  #endif
  
-#ifndef STORAGE_SD_FORCE_DISABLE
+ #ifndef STORAGE_SD_FORCE_DISABLE
      #define STORAGE_SD_ENABLED
-#endif
+ #endif
  
-#include <ESP8266WiFi.h>
-#define FTP_CLIENT_NETWORK_CLASS WiFiClient
-#define FTP_SERVER_NETWORK_SERVER_CLASS WiFiServer
-#define NET_CLASS WiFi
-#define CommandIs( a ) (command != NULL && ! strcmp_P( command, PSTR( a )))
-#define ParameterIs( a ) ( parameter != NULL && ! strcmp_P( parameter, PSTR( a )))
-#include <SPI.h>
-#include <SD.h>
-#define STORAGE_MANAGER SD
-#define FTP_FILE File
-#define FTP_DIR File
-#define FTP_FILE_READ FILE_READ
-#define FTP_FILE_READ_ONLY FILE_READ
-#define FTP_FILE_READ_WRITE FILE_WRITE
-#define FTP_FILE_WRITE_APPEND FILE_WRITE
-#define FTP_FILE_WRITE_CREATE FILE_WRITE
-#define FILENAME_LENGTH 255
+ // Includes and defined based on Network Type
+ #include <ESP8266WiFi.h>
+ #define FTP_CLIENT_NETWORK_CLASS WiFiClient
+ #define FTP_SERVER_NETWORK_SERVER_CLASS WiFiServer
+ #define NET_CLASS WiFi
+ #define CommandIs( a ) (command != NULL && ! strcmp_P( command, PSTR( a )))
+ #define ParameterIs( a ) ( parameter != NULL && ! strcmp_P( parameter, PSTR( a )))
  
+ #include <SPI.h>
+ #include <SD.h>
+ #define STORAGE_MANAGER SD
+ #define FTP_FILE File
+ #define FTP_DIR File
+ #define FTP_FILE_READ FILE_READ
+ #define FTP_FILE_READ_ONLY FILE_READ
+ #define FTP_FILE_READ_WRITE FILE_WRITE
+ #define FTP_FILE_WRITE_APPEND FILE_WRITE
+ #define FTP_FILE_WRITE_CREATE FILE_WRITE
+ #define FILENAME_LENGTH 255
+ #define OPEN_CLOSE_SD
  
-#define OPEN_CLOSE_SD
- 
-#define FTP_CMD_PORT 21           // Command port on which server is listening
-#define FTP_DATA_PORT_DFLT 20     // Default data port in active mode
-#define FTP_DATA_PORT_PASV 50009  // Data port in passive mode
-#define FF_MAX_LFN 255            // max size of a long file name
-#define FTP_CMD_SIZE FF_MAX_LFN+8 // max size of a command
-#define FTP_CWD_SIZE FF_MAX_LFN+8 // max size of a directory name
-#define FTP_FIL_SIZE FF_MAX_LFN   // max size of a file name
-#define FTP_CRED_SIZE 16          // max size of username and password
-#define FTP_NULLIP() IPAddress(0,0,0,0)
+ #define FTP_CMD_PORT 21           // Command port on which server is listening
+ #define FTP_DATA_PORT_DFLT 20     // Default data port in active mode
+ #define FTP_DATA_PORT_PASV 50009  // Data port in passive mode
+ #define FF_MAX_LFN 255            // max size of a long file name
+ #define FTP_CMD_SIZE FF_MAX_LFN+8 // max size of a command
+ #define FTP_CWD_SIZE FF_MAX_LFN+8 // max size of a directory name
+ #define FTP_FIL_SIZE FF_MAX_LFN   // max size of a file name
+ #define FTP_CRED_SIZE 16          // max size of username and password
+ #define FTP_NULLIP() IPAddress(0,0,0,0)
  
  enum ftpCmd { FTP_Stop = 0,       //  In this stage, stop any connection
                FTP_Init,           //  initialize some variables
@@ -138,6 +139,7 @@
  private:
    void (*_callback)(FtpOperation ftpOperation, unsigned int freeSpace, unsigned int totalSpace){};
    void (*_transferCallback)(FtpTransferOperation ftpOperation, const char* name, unsigned int transferredSize){};
+ 
    void    iniVariables();
    void    clientConnected();
    void    disconnectClient();
@@ -168,10 +170,7 @@
         return String(file->name());
    }
    bool     exists( const char * path ) {
- #if STORAGE_TYPE == (FTP_SERVER_NETWORK_TYPE == NETWORK_ESP8266_242)
-       if (strcmp(path, "/") == 0) return true;
- #endif
-       return STORAGE_MANAGER.exists( path );
+        return STORAGE_MANAGER.exists( path );
    };
    bool     remove( const char * path ) { return STORAGE_MANAGER.remove( path ); };
    bool     makeDir( const char * path ) { return STORAGE_MANAGER.mkdir( path ); };
@@ -182,12 +181,12 @@
    uint32_t capacity() { return true; };
    uint32_t free() { return true; };
    bool    legalChar( char c ) // Return true if char c is allowed in a long file name
-    {
-        if( c == '"' || c == '*' || c == '?' || c == ':' ||
-            c == '<' || c == '>' || c == '|' )
-          return false;
-   return 0x1f < c && c < 0x7f;
-    }
+   {
+     if( c == '"' || c == '*' || c == '?' || c == ':' ||
+         c == '<' || c == '>' || c == '|' )
+       return false;
+  return 0x1f < c && c < 0x7f;
+   }
    IPAddress   localIp;                // IP address of server as seen by clients
    IPAddress   dataIp;                 // IP address of client for data
    FTP_SERVER_NETWORK_SERVER_CLASS  ftpServer;
@@ -216,7 +215,6 @@
             dataPort;
    uint16_t iCL;                       // pointer to cmdLine next incoming char
    uint16_t nbMatch;
- 
    uint32_t millisDelay,               //
             millisEndConnection,       //
             millisBeginTrans,          // store time of beginning of a transaction

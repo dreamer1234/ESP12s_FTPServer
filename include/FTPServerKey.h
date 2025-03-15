@@ -18,20 +18,19 @@
  #define FTP_SERVER_CONFIG_H
  
  #define STORAGE_SD 			5 	// Standard SD library (suitable for Arduino esp8266 and esp32
- #define STORAGE_SD_MMC		10 	// SD_MMC library
  
- #define NETWORK_ESP8266_ASYNC 	(1)
  #define NETWORK_ESP8266 		(2) 	// Standard ESP8266WiFi
- #define NETWORK_ESP8266_242 	(3) 	// ESP8266WiFi before 2.4.2 core
- 
+
  // esp8266 configuration
  #ifndef DEFAULT_FTP_SERVER_NETWORK_TYPE_ESP8266
      #define DEFAULT_FTP_SERVER_NETWORK_TYPE_ESP8266 	NETWORK_ESP8266
      #define DEFAULT_STORAGE_TYPE_ESP8266 				STORAGE_SD
  #endif
-  
+ // esp32 configuration
+ 
  #define UTF8_SUPPORT
  
+
  // Disconnect client after 5 minutes of inactivity (expressed in seconds)
  #ifndef FTP_TIME_OUT
      #define FTP_TIME_OUT  5 * 60

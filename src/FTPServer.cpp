@@ -21,9 +21,11 @@
  {
    cmdPort = _cmdPort;
    pasvPort = _pasvPort;
+ 
    millisDelay = 0;
    nbMatch = 0;
    iCL = 0;
+ 
    iniVariables();
  }
  
@@ -38,9 +40,11 @@
    ftpServer.setNoDelay( true );
    localIp = NET_CLASS.localIP(); 
    if( strlen( _user ) > 0 && strlen( _user ) < FTP_CRED_SIZE ) {
-      this->user = _user;
+
+       this->user = _user;
    }
    if( strlen( _pass ) > 0 && strlen( _pass ) < FTP_CRED_SIZE ) {
+
       this->pass = _pass;
    }
  
@@ -89,12 +93,16 @@
  {
    // Default for data port
    dataPort = FTP_DATA_PORT_DFLT;
+   
    // Default Data connection is Active
    dataConn = FTP_NoConn;
+   
    // Set the root directory
    strcpy( cwdName, "/" );
+ 
    rnfrCmd = false;
    transferStage = FTP_Close;
+ 
    restartPos = 0;
  }
  
@@ -111,17 +119,17 @@
              iniVariables();
              cmdStage = FTP_Client;
          } else if (cmdStage == FTP_Client) {    // Ftp server idle
-           if( ftpServer.hasClient())
-           {
-             client.stop();
-             client = ftpServer.available();
-           }
+          if( ftpServer.hasClient())
+          {
+            client.stop();
+            client = ftpServer.available();
+          }
             if (client.connected())             // A client connected
-             {
-                 clientConnected();
-                 millisEndConnection = millis() + 1000L * FTP_AUTH_TIME_OUT; // wait client id for 10 s.
-                 cmdStage = FTP_User;
-             }
+            {
+                clientConnected();
+                millisEndConnection = millis() + 1000L * FTP_AUTH_TIME_OUT; // wait client id for 10 s.
+                cmdStage = FTP_User;
+            }
          } else if (readChar() > 0)             // got response
                  {
              processCommand();
@@ -175,8 +183,8 @@
  {
    // Initialize SDCard
    InitializeSDCard();
-   client.print(welcomeMessage); client.println(F(" ---"));
-   client.print  (F("220 -- By Renzo Mischianti Version ")); client.print(FTP_SERVER_VERSION); client.println(F("   --"));
+   client.print  (F("220--- ")); client.print(welcomeMessage); client.println(F(" ---"));
+   client.print  (F("220 -- By Renzo Mischianti --  Version ")); client.print(FTP_SERVER_VERSION); client.println(F("   --"));
    iCL = 0;
    if (FtpServer::_callback) {
        FtpServer::_callback(FTP_CONNECT, free(), capacity());
@@ -399,15 +407,17 @@
      } else {
        dataIp = localIp;
      }
+ 
     if (dataIp.toString() ==  F("0.0.0.0")) {
          dataIp = NET_CLASS.softAPIP();
      }
-     dataPort = pasvPort;
+       dataPort = pasvPort;
        char buffer[64];
        snprintf(buffer, sizeof(buffer),
                 "227 Entering Passive Mode (%d,%d,%d,%d,%d,%d)",
                 int(dataIp[0]), int(dataIp[1]), int(dataIp[2]), int(dataIp[3]),
                 dataPort >> 8, dataPort & 255);
+ 
        client.println(buffer);
      dataConn = FTP_Pasive;
    }
@@ -631,10 +641,8 @@
          transferStage = FTP_Store;
  
            if (FtpServer::_transferCallback) {
- 
-               FtpServer::_transferCallback(FTP_UPLOAD_START, parameter, bytesTransfered);
+              FtpServer::_transferCallback(FTP_UPLOAD_START, parameter, bytesTransfered);
            }
- 
        }
      }
    }
@@ -697,10 +705,10 @@
        } else
        {
         if( makeDir( path )) {
-             client.print( F("257 \"") ); client.print( parameter ); client.print( F("\"") ); client.println( F(" created") );
-         } else {
-             client.print( F("550 Can't create \"") ); client.print( parameter ); client.println( F("\"") );
-         }
+            client.print( F("257 \"") ); client.print( parameter ); client.print( F("\"") ); client.println( F(" created") );
+        } else {
+        client.print( F("550 Can't create \"") ); client.print( parameter ); client.println( F("\"") );
+        }
        }
      }
    }
@@ -791,6 +799,7 @@
        uint8_t month, day, hour, minute, second, setTime;
        char dt[ 15 ];
        bool mdtm = CommandIs( "MDTM" );
+ 
        setTime = getDateTime( dt, & year, & month, & day, & hour, & minute, & second );
        // fname point to file name
        fname += setTime;
@@ -870,7 +879,7 @@
        uint16_t count = 1000; // wait up to a second
        while( ! data.connected() && count -- > 0 )
        {
-             if( dataServer.hasClient())
+            if( dataServer.hasClient())
              {
                data.stop();
                data = dataServer.available();
@@ -887,7 +896,6 @@
    } else if( out150 ) {
      client.print( F("150 Accepted data connection to port ") ); client.println( dataPort );
    }
-
        return  data.connected() || data.available();
  }
  
@@ -903,8 +911,8 @@
   
  bool FtpServer::openDir( FTP_DIR * pdir )
  {
-   bool openD;
-   if( strlen( cwdName ) == 0 ){
+  bool openD;
+  if( strlen( cwdName ) == 0 ){
          dir = STORAGE_MANAGER.open( "/" );
        } else {
          dir = STORAGE_MANAGER.open( cwdName );
@@ -975,8 +983,7 @@
      bytesTransfered += nb;
  
        if (FtpServer::_transferCallback) {
- 
-           FtpServer::_transferCallback(FTP_UPLOAD, getFileName(&file).c_str(), bytesTransfered);
+          FtpServer::_transferCallback(FTP_UPLOAD, getFileName(&file).c_str(), bytesTransfered);
        }
    }
    if( nb < 0 || rc == nb  ) {
@@ -1000,9 +1007,8 @@
          data->print(time);
          data->print( F("\t") );
          if (writeFilename) data->println( fn );
-
      } else {
- 
+
          data->print( F("-rw-rw-r--\t1\t") );
          data->print( user );
          data->print( F("\t") );
@@ -1011,7 +1017,6 @@
          data->print(time);
          data->print( F("\t") );
          if (writeFilename) data->println( fn );
-
      }
  
  }
@@ -1025,9 +1030,11 @@
    // a buffer with enough space for the formats
    char buf[25];
    char *b = buf;
+ 
    // break down the provided file time
    struct tm _tm;
    gmtime_r(&ft, &_tm);
+ 
    if (dateContracted)
    {
      // "%Y%m%d%H%M%S", e.g. "20200517123400"
@@ -1072,16 +1079,16 @@
    if( ! dataConnected())
    {
     dir.close();
-     return false;
+    return false;
    }
-       FTP_FILE fileDir = dir.openNextFile();
-       if( fileDir )
-       {
-         String fn = fileDir.name();
-         if (fn[0]=='/') { fn.remove(0, fn.lastIndexOf("/")+1); }
-         generateFileLine(&data, fileDir.isDirectory(), fn.c_str(), long( fileDir.size()), "Jan 01 00:00", this->user);
-         nbMatch ++;
-         return true;
+    FTP_FILE fileDir = dir.openNextFile();
+    if( fileDir )
+    {
+     String fn = fileDir.name();
+     if (fn[0]=='/') { fn.remove(0, fn.lastIndexOf("/")+1); }
+     generateFileLine(&data, fileDir.isDirectory(), fn.c_str(), long( fileDir.size()), "Jan 01 00:00", this->user);
+     nbMatch ++;
+     return true;
    }
    client.print( F("226 ") ); client.print( nbMatch ); client.println( F(" matches total") );
    dir.close();
@@ -1093,28 +1100,30 @@
  {
    if( ! dataConnected())
    {
-   dir.close();
-   return false;
+    dir.close();
+    return false;
    }
- 
-      File fileDir = dir.openNextFile();
-      if( fileDir )
-      {
-        char dtStr[ 15 ];
-        strcpy(dtStr, "19700101000000");
-        String fn = fileDir.name();
-        fn.remove(0, fn.lastIndexOf("/")+1);
-        long fz = fileDir.size();
-        data.print( F("Type=") );
-        data.print( ( fileDir.isDirectory() ? F("dir") : F("file")) );
-        data.print( F(";Modify=") ); data.print(dtStr);
-        data.print( F(";Size=") ); data.print( fz );
-        data.print( F("; ") ); data.println( fn );
-        nbMatch ++;
-        return true;
-      }
+
+    File fileDir = dir.openNextFile();
+    if( fileDir )
+    {
+      char dtStr[ 15 ];
+      // struct tm * timeinfo;
+      strcpy(dtStr, "19700101000000");
+      String fn = fileDir.name();
+      fn.remove(0, fn.lastIndexOf("/")+1);
+      long fz = fileDir.size();
+      data.print( F("Type=") );
+      data.print( ( fileDir.isDirectory() ? F("dir") : F("file")) );
+      data.print( F(";Modify=") ); data.print(dtStr);// data.print( makeDateTimeStr( dtStr, time, time) );
+      data.print( F(";Size=") ); data.print( fz );
+      data.print( F("; ") ); data.println( fn );
+      nbMatch ++;
+      return true;
+       }
    client.println(F("226-options: -a -l") );
    client.print( F("226 ") ); client.print( nbMatch ); client.println( F(" matches total") );
+   dir.close();
    data.stop();
    return false;
  }
@@ -1145,10 +1154,11 @@
        if (FtpServer::_transferCallback) {
            FtpServer::_transferCallback(FTP_TRANSFER_ERROR, getFileName(&file).c_str(), bytesTransfered);
        }
-     file.close();
-     dir.close();
-     client.println(F("426 Transfer aborted") );
-     transferStage = FTP_Close;
+ 
+    file.close();
+    dir.close();
+    client.println(F("426 Transfer aborted") );
+    transferStage = FTP_Close;
    }
    data.stop(); 
    restartPos = 0; // Reset restart position on abort
@@ -1158,6 +1168,7 @@
  int32_t FtpServer::readChar()
  {
    int8_t rc = -1;
+ 
    if( client.available())
    {
      char c = client.read();
@@ -1274,7 +1285,6 @@
      {
        strcpy( workingDir, "/" );
      }
- 
      if (strcmp(param, "..") == 0)
      {
        param += 2;
@@ -1285,15 +1295,17 @@
        param += 3;
      }
    }
+ 
    if( strncmp( param, "./", 2 ) == 0 )
    {
-     param += 2;
+     param += 2; 
      if (*param == '\0')
      {
        strcpy( fullName, workingDir );
        return true;
      }
    }
+ 
    if( param[0] != '/' ) 
    {
      strcpy( fullName, workingDir );
@@ -1303,6 +1315,7 @@
    }
    else
      strcpy( fullName, param );
+ 
    uint16_t strl = strlen( fullName ) - 1;
    if( fullName[strl] == '/' && strl > 1 )
      fullName[strl] = '\0';
@@ -1333,6 +1346,7 @@
        return false;
    }
  #endif
+ 
    return true;
  }
  
@@ -1383,7 +1397,6 @@
    if( i == 18 )
      return 0;
    i ++ ;
-   
    strncpy( dt, parameter, 14 );
    dt[ 14 ] = 0;
    * psecond = atoi( dt + 12 ); 
@@ -1424,19 +1437,18 @@
  }
  
   bool FtpServer::openFile( char path[ FTP_CWD_SIZE ], int readTypeInt ){
-        if (readTypeInt == 0X01) {
-            readTypeInt = FILE_READ;
-        }else {
-            readTypeInt = FILE_WRITE;
-        }
-        file = STORAGE_MANAGER.open( path, readTypeInt );
-        if (!file) {
-            return false;
-        }else{
-            return true;
-        }
+      if (readTypeInt == 0X01) {
+          readTypeInt = FILE_READ;
+      }else {
+          readTypeInt = FILE_WRITE;
+      }
+      file = STORAGE_MANAGER.open( path, readTypeInt );
+      if (!file) { 
+          return false;
+      }else{
+          return true;
+      }
  }
-
  
  // Return true if path points to a directory
  bool FtpServer::isDir( char * path )
@@ -1454,11 +1466,12 @@
  bool FtpServer::timeStamp( char * path, uint16_t year, uint8_t month, uint8_t day,
                             uint8_t hour, uint8_t minute, uint8_t second )
  {
-    return true;
+   return true;
  }
                          
  bool FtpServer::getFileModTime( char * path, uint16_t * pdate, uint16_t * ptime )
  {
+ //  FTP_FILE file;
    bool res;
    if( ! openFile( path, FTP_FILE_READ )) {
      return false;
@@ -1468,30 +1481,32 @@
    return res;
  }
  
+ // Assume SD library is SdFat (or family) and file is open
+     
  bool FtpServer::getFileModTime( uint16_t * pdate, uint16_t * ptime )
  {
    return false;
  }
-
-  bool     FtpServer::rename( const char * path, const char * newpath ){
-        FTP_FILE myFileIn = STORAGE_MANAGER.open(path, FILE_READ);
-        FTP_FILE myFileOut = STORAGE_MANAGER.open(newpath, FILE_WRITE);
-         if(myFileOut) {
-            while (myFileIn.available() > 0)
-                  {
-                    int i = myFileIn.readBytes((char*)buf, FTP_BUF_SIZE);
-                    myFileOut.write(buf, i);
-                  }
-                  // done, close the destination file
-                myFileOut.close();
-                myFileOut = STORAGE_MANAGER.open(newpath, FILE_READ);
-        }
-        bool operation = false;
-        if (myFileIn.size() == myFileOut.size()) {
-            operation = true;
-        }
-        if (!operation) return operation;
-        myFileIn.close();
-        myFileOut.close();
-        return remove( path );
-  };
+ 
+ bool     FtpServer::rename( const char * path, const char * newpath ){
+   FTP_FILE myFileIn = STORAGE_MANAGER.open(path, FILE_READ);
+   FTP_FILE myFileOut = STORAGE_MANAGER.open(newpath, FILE_WRITE);
+   if(myFileOut) {
+       while (myFileIn.available() > 0)
+          {
+            int i = myFileIn.readBytes((char*)buf, FTP_BUF_SIZE);
+            myFileOut.write(buf, i);
+          }
+          // done, close the destination file
+          myFileOut.close();
+          myFileOut = STORAGE_MANAGER.open(newpath, FILE_READ);
+         }
+   bool operation = false;
+   if (myFileIn.size() == myFileOut.size()) {
+       operation = true;
+   }
+   if (!operation) return operation;
+   myFileIn.close();
+   myFileOut.close();
+   return remove( path );
+};
