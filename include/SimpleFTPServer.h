@@ -8,12 +8,11 @@
  *
  */
 
- #ifndef SIMPLE_FTP_SERVER_H
- #define SIMPLE_FTP_SERVER_H
- 
- #include <FtpServer.h>
- 
- #endif
- 
- #pragma once
- 
+#ifndef SIMPLE_FTP_SERVER_H
+#define SIMPLE_FTP_SERVER_H
+
+#include <FtpServer.h>
+
+#endif
+
+#pragma once

@@ -5,11 +5,22 @@
 *
 */
 
-#include <wifi.h>
-#include <ESP8266mDNS.h>
+#include <wifi_esp.h>
 #include <sdcard.h>
 
+
+#ifdef ESP8266
+#include <ESP8266mDNS.h>
 #define HOSTNAME    "ESP8266"
+#endif
+
+#ifdef ESP32
+#include <ESPmDNS.h>
+#define HOSTNAME    "ESP32"
+#endif
+
+
+
 
 void ConnectToWifi(){
 
