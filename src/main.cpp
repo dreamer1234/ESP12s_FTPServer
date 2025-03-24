@@ -29,13 +29,13 @@
 
 #ifdef ESP8266
 #include <ESP8266mDNS.h>
-const char* mdns_name = "ESP8266";
+//const char* mdns_name = "ESP8266";
 #endif
 
 
 #ifdef ESP32
 #include <ESPmDNS.h>
-const char* mdns_name = "ESP32";
+//const char* mdns_name = "ESP32";
 #endif
 
  
@@ -53,8 +53,10 @@ const char* mdns_name = "ESP32";
  }
  
  void loop() {
-   
+  
+  #ifdef ESP8266
   MDNS.update();
+  #endif
   // Handle FTP server operations
   ftpServer.handleFTP(); // Continuously process FTP requests
  }

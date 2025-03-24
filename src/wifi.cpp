@@ -40,6 +40,10 @@ void ConnectToWifi(){
      delay(500);
      Serial.print(".");
    }
-   MDNS.begin(HOSTNAME);
+   if (!MDNS.begin(HOSTNAME)) {
+    while (1) {
+      delay(1000);
+    }
+   }
    
 }
