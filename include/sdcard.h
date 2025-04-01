@@ -9,7 +9,7 @@
 #include <SimpleFTPServer.h>
 #include <SPI.h>
 #include <SD.h>
-#include <sdios.h>
+//#include <sdios.h>
 
 
 #define SD_CS		4
@@ -20,8 +20,9 @@
 
 
 #define SPI_BLOCKOUT_PERIOD	20000UL 
-
+/*
 void takeBusControl();
 void relinquishBusControl();
+*/
 void InitializeSDCard();
 void UnmountSDCard();

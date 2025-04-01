@@ -18,6 +18,7 @@
 bool weHaveBus = false;
 volatile long spiBlockoutTime = 0;
 
+/*
 
  void takeBusControl()	{
   // ------------------------
@@ -39,10 +40,10 @@ void relinquishBusControl()	{
     LED_OFF;
     weHaveBus = false;
   }
-
+*/
 void InitializeSDCard(){
 
-   takeBusControl();
+  // takeBusControl();
    // Wait for a short delay before initializing SD card
    delay(1000);
    // Initialize SD card
@@ -63,7 +64,7 @@ void UnmountSDCard(){
     Serial.print("Unmounting SD card...");
     delay(1000);
     SD.end();
-    relinquishBusControl();
+//    relinquishBusControl();
     pinMode( CS_SENSE, INPUT );
     digitalWrite( CS_SENSE, HIGH );
 }

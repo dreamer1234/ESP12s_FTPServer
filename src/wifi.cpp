@@ -31,7 +31,9 @@ void ConnectToWifi(){
 
    // Connect to WiFi network
    WiFi.mode(WIFI_STA);
-   WiFi.setPhyMode(WIFI_PHY_MODE_11N);
+   #ifdef ESP8266
+      WiFi.setPhyMode(WIFI_PHY_MODE_11N);
+   #endif
    WiFi.hostname(HOSTNAME);
    WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
    
