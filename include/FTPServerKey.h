@@ -17,13 +17,6 @@
 #ifndef FTP_SERVER_CONFIG_H
 #define FTP_SERVER_CONFIG_H
 
-// Uncomment to enable printing out nice debug messages.
- #define FTP_SERVER_DEBUG
-// #define FTP_ADDITIONAL_DEBUG
-
-// Define where debug output will be printed.
-#define DEBUG_PRINTER Serial
-
 #define STORAGE_SDFAT1 		1 	// Library SdFat version 1.4.x
 #define STORAGE_SDFAT2 		2 	// Library SdFat version >= 2.0.2
 #define STORAGE_SPIFM  		3 	// Libraries Adafruit_SPIFlash and SdFat-Adafruit-Fork
@@ -55,57 +48,12 @@
 // esp8266 configuration
 #ifndef DEFAULT_FTP_SERVER_NETWORK_TYPE_ESP8266
 	#define DEFAULT_FTP_SERVER_NETWORK_TYPE_ESP8266 	NETWORK_ESP8266
-	#define DEFAULT_STORAGE_TYPE_ESP8266 				STORAGE_LITTLEFS
+	#define DEFAULT_STORAGE_TYPE_ESP8266 				STORAGE_SD
 #endif
 // esp32 configuration
 #ifndef DEFAULT_FTP_SERVER_NETWORK_TYPE_ESP32
 	#define DEFAULT_FTP_SERVER_NETWORK_TYPE_ESP32 		NETWORK_ESP32
 	#define DEFAULT_STORAGE_TYPE_ESP32 					STORAGE_FFAT
-	/**
-To use Ethernet.h with esp32 fix would be to change in Ethernet.h the line
-class EthernetServer : public Server {
-to
-class EthernetServer : public Stream {
-
-or
-
-in \esp32\2.0.6\cores\esp32\Server.h
-A workaround is to change line 28 of the ESP32 core's Server.h from:
-    virtual void begin(uint16_t port=0) =0;
-to
-    virtual void begin() =0;
-However, the last one, that will break anything that uses the ESP32 WiFi library's WebServer class.
-
-https://github.com/arduino-libraries/Ethernet/issues/193
-https://github.com/arduino-libraries/Ethernet/issues/88
-	 *
-	 */
-#endif
-// Standard AVR Arduino configuration
-#ifndef DEFAULT_FTP_SERVER_NETWORK_TYPE_ARDUINO
-	#define DEFAULT_FTP_SERVER_NETWORK_TYPE_ARDUINO 	NETWORK_W5100
-	#define DEFAULT_STORAGE_TYPE_ARDUINO 				STORAGE_SD
-#endif
-// STM32 configuration
-#ifndef DEFAULT_FTP_SERVER_NETWORK_TYPE_STM32
-	#define DEFAULT_FTP_SERVER_NETWORK_TYPE_STM32 		NETWORK_W5100
-	#define DEFAULT_STORAGE_TYPE_STM32 					STORAGE_SDFAT2
-#endif
-// Raspberry Pi Pico (rp2040) configuration
-#ifndef DEFAULT_FTP_SERVER_NETWORK_TYPE_RP2040
-    #define DEFAULT_FTP_SERVER_NETWORK_TYPE_RP2040 		NETWORK_RP2040_WIFI
-	#define DEFAULT_STORAGE_TYPE_RP2040					STORAGE_LITTLEFS
-#endif
-
-// Arduino SAMD21 like Arduino MKR Nano 33 IoT or Wio Terminal
-#ifndef DEFAULT_FTP_SERVER_NETWORK_TYPE_ARDUINO_SAMD
-// Wio Terminal
-//	#define DEFAULT_FTP_SERVER_NETWORK_TYPE_SAMD NETWORK_SEEED_RTL8720DN
-//	#define DEFAULT_STORAGE_TYPE_SAMD STORAGE_SEEED_SD
-
-// Arduino SAMD
-	#define DEFAULT_FTP_SERVER_NETWORK_TYPE_SAMD 		NETWORK_WiFiNINA
-	#define DEFAULT_STORAGE_TYPE_SAMD 					STORAGE_SD
 #endif
 
 #define UTF8_SUPPORT
