@@ -32,7 +32,6 @@
 //const char* mdns_name = "ESP8266";
 #endif
 
-
 #ifdef ESP32
 #include <ESPmDNS.h>
 //const char* mdns_name = "ESP32";

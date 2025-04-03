@@ -5,11 +5,20 @@
 *
 */
 
-#include <wifi.h>
-#include <ESP8266mDNS.h>
+#include <wifi_esp.h>
 #include <sdcard.h>
 
+
+#ifdef ESP8266
+#include <ESP8266mDNS.h>
 #define HOSTNAME    "ESP8266"
+#endif
+
+#ifdef ESP32
+#include <ESPmDNS.h>
+#define HOSTNAME    "ESP32"
+#endif
+
 
 void ConnectToWifi(){
 
@@ -19,7 +28,7 @@ void ConnectToWifi(){
   * REMEMBER THIS APPROACH IS SLOWER THAN READING CREDENTIALS FROM INTERNAL MEMORY
   */
 
-  while (!SD.begin(CS_SENSE)) {
+  while (!SD.begin(SD_CS)) {
     delay(500);
   }
    File file = SD.open("/credentials.txt", FILE_READ);
@@ -39,16 +48,23 @@ void ConnectToWifi(){
    // Remove special characters Windows inserts in text files
    ssid.trim();
    passwd.trim();
-    // Connect to WiFi network
+
+   // Connect to WiFi network
    WiFi.mode(WIFI_STA);
-   WiFi.setPhyMode(WIFI_PHY_MODE_11N);
+   #ifdef ESP8266
+      WiFi.setPhyMode(WIFI_PHY_MODE_11N);
+   #endif
    WiFi.hostname(HOSTNAME);
-   WiFi.begin(ssid.c_str(), passwd.c_str());
-   
+   WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
+      
    while (WiFi.status() != WL_CONNECTED) {
      delay(500);
      Serial.print(".");
    }
-   MDNS.begin(HOSTNAME);
+   if (!MDNS.begin(HOSTNAME)) {
+    while (1) {
+      delay(1000);
+    }
+   }
    
 }
