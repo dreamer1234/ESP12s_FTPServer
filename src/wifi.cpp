@@ -24,7 +24,7 @@
 
 void ConnectToWifi(){
 
-  UnmountSDCard();
+  //UnmountSDCard();
   // WiFi credentials by default
   const char* WIFI_SSID = "BTT_TF_CLOUD";    		// Replace with your WiFi SSID
   const char* WIFI_PASSWORD = "deib2wke9nn54n";    // Replace with your WiFi password
