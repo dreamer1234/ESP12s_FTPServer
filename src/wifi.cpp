@@ -6,7 +6,7 @@
 */
 
 #include <wifi.h>
-#include <ESP8266mDNS.h>
+#include <ESPmDNS.h>
 #include <sdcard.h>
 
 #define HOSTNAME    "ESP8266"
@@ -20,7 +20,6 @@ void ConnectToWifi(){
 
    // Connect to WiFi network
    WiFi.mode(WIFI_STA);
-   WiFi.setPhyMode(WIFI_PHY_MODE_11N);
    WiFi.hostname(HOSTNAME);
    WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
    

@@ -18,7 +18,7 @@
 bool weHaveBus = false;
 volatile long spiBlockoutTime = 0;
 
-
+/*
  void takeBusControl()	{
   // ------------------------
     weHaveBus = true;
@@ -39,23 +39,23 @@ void relinquishBusControl()	{
     LED_OFF;
     weHaveBus = false;
   }
-
+*/
 void InitializeSDCard(){
 
-   takeBusControl();
+   //takeBusControl();
    // Wait for a short delay before initializing SD card
    delay(1000);
    // Initialize SD card
    
   // If other chips are connected to SPI bus, set to high the pin connected
   // to their CS before initializing Flash memory
-   pinMode( CS_SENSE, OUTPUT );
-   digitalWrite( CS_SENSE, HIGH );
-   while (!SD.begin(CS_SENSE)) {
+   pinMode( SD_CS, OUTPUT );
+   digitalWrite( SD_CS, HIGH );
+   while (!SD.begin(SD_CS)) {
      delay(500);
    }
-   pinMode( CS_SENSE, OUTPUT );
-   digitalWrite( CS_SENSE, HIGH );
+   pinMode( SD_CS, OUTPUT );
+   digitalWrite( SD_CS, HIGH );
 }
 
 void UnmountSDCard(){
@@ -64,6 +64,6 @@ void UnmountSDCard(){
     delay(1000);
     SD.end();
     relinquishBusControl();
-    pinMode( CS_SENSE, INPUT );
-    digitalWrite( CS_SENSE, HIGH );
+    pinMode( SD_CS, INPUT );
+    digitalWrite( SD_CS, HIGH );
 }

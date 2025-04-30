@@ -25,8 +25,8 @@
  */
 
  #include <SimpleFTPServer.h>
- #include <wifi.h>
- #include <ESP8266mDNS.h>
+ #include <wifi_esp.h>
+ #include <ESPmDNS.h>
 
  
  // FTP server instance
@@ -44,7 +44,6 @@
  
  void loop() {
    
-  MDNS.update();
   // Handle FTP server operations
   ftpServer.handleFTP(); // Continuously process FTP requests
  }

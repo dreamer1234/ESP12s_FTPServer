@@ -47,7 +47,7 @@
  #endif
  
  // Includes and defined based on Network Type
- #include <ESP8266WiFi.h>
+ #include <WiFi.h>
  #define FTP_CLIENT_NETWORK_CLASS WiFiClient
  #define FTP_SERVER_NETWORK_SERVER_CLASS WiFiServer
  #define NET_CLASS WiFi
