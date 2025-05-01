@@ -66,7 +66,7 @@ void FtpServer::end()
 {
     if(client.connected()) {
         disconnectClient();
-        SD.end();
+    //    SD.end();
     }
 
 #if FTP_SERVER_NETWORK_TYPE == NETWORK_ESP32
@@ -198,7 +198,7 @@ void FtpServer::clientConnected()
 void FtpServer::disconnectClient()
 {
   abortTransfer();
-  SD.end();
+//  SD.end();
   client.println(F("221 Goodbye") );
 
   if (FtpServer::_callback) {
@@ -209,7 +209,7 @@ void FtpServer::disconnectClient()
   }
   if( data ) {
     data.stop();
-    SD.end();
+  //  SD.end();
   }
 }
 
@@ -1173,7 +1173,7 @@ void FtpServer::closeTransfer()
     client.println(F("226 File successfully transferred") );
   file.close();
   data.stop();
-  SD.end();
+  //SD.end();
 }
 
 void FtpServer::abortTransfer()
@@ -1190,7 +1190,7 @@ void FtpServer::abortTransfer()
     transferStage = FTP_Close;
   }
   data.stop();
-  SD.end();
+  //SD.end();
   restartPos = 0; // Reset restart position on abort
 }
 

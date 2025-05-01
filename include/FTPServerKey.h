@@ -33,12 +33,12 @@
 // esp32 configuration
 #ifndef DEFAULT_FTP_SERVER_NETWORK_TYPE_ESP32
 	#define DEFAULT_FTP_SERVER_NETWORK_TYPE_ESP32 		NETWORK_ESP32
-	#define DEFAULT_STORAGE_TYPE_ESP32 					STORAGE_SD
+	#define DEFAULT_STORAGE_TYPE_ESP32 					STORAGE_SDFAT2
 #endif
 
 #define UTF8_SUPPORT
 
-//#define SD_CS_PIN 4
+#define SD_CS_PIN 4
 // Disconnect client after 5 minutes of inactivity (expressed in seconds)
 #ifndef FTP_TIME_OUT
 	#define FTP_TIME_OUT  5 * 60

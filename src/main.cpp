@@ -26,6 +26,7 @@
 
 #include <SimpleFTPServer.h>
 #include <wifi_esp.h>
+#include <sdcard.h>
 
 #ifdef ESP8266
 #include <ESP8266mDNS.h>
@@ -45,6 +46,8 @@
  
    // Connect to WiFi
    ConnectToWifi(); 
+   // Init SDCard
+   InitializeSDCard();
    // Start FTP server with username and password
   ftpServer.begin("user", "password"); // Replace with your desired FTP credentials
   Serial.println("FTP server started!");
