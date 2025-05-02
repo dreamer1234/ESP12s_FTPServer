@@ -9,12 +9,6 @@
 */
 
 
- // LED is connected to GPIO2 on this board
-#define INIT_LED			{pinMode(2, OUTPUT);}
-#define LED_ON				{digitalWrite(2, LOW);}
-#define LED_OFF				{digitalWrite(2, HIGH);}
-
-
 bool weHaveBus = false;
 volatile long spiBlockoutTime = 0;
 
@@ -26,7 +20,6 @@ SdFat sd;
  void takeBusControl()	{
   // ------------------------
     weHaveBus = true;
-    LED_ON;
     pinMode(MISO, SPECIAL);	
     pinMode(MOSI, SPECIAL);	
     pinMode(SCLK, SPECIAL);	
@@ -40,7 +33,6 @@ void relinquishBusControl()	{
     pinMode(MOSI, INPUT);	
     pinMode(SCLK, INPUT);	
     pinMode(SD_CS, INPUT);
-    LED_OFF;
     weHaveBus = false;
   }
 */
@@ -73,9 +65,10 @@ void UnmountSDCard(){
     delay(1000);
 //    SD.end();
 //    relinquishBusControl();
-    pinMode(MISO, INPUT);	
+    sd.end();
+    /*pinMode(MISO, INPUT);	
     pinMode(MOSI, INPUT);	
     pinMode(SCLK, INPUT);	
     pinMode(SD_CS, INPUT);
-    digitalWrite( SD_CS, HIGH );
+    digitalWrite( SD_CS, HIGH );*/
 }
